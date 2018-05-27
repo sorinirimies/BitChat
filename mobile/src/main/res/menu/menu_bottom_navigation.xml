@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item
+        android:id="@+id/action_chat"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_dialog_email"
+        android:title="@string/app_name"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_map"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_dialog_dialer"
+        android:title="@string/app_name"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_user"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_dialog_alert"
+        android:title="@string/app_name"
+        app:showAsAction="ifRoom"/>
+
+</menu>
