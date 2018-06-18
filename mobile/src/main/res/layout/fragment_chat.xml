@@ -1,12 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
                                              android:layout_width="match_parent"
-                                             android:layout_height="match_parent">
+                                             android:layout_height="match_parent"
+                                             tools:layout_editor_absoluteY="81dp">
 
-    <TextView
-        android:id="@+id/tvChat"
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvConversation"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/edtChatMsg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.703">
+    </android.support.v7.widget.RecyclerView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btnSend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chat"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"/>
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:focusable="true"
+        android:gravity="center"
+        android:src="@drawable/ic_send_message"
+        android:text="@string/send_message"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        app:elevation="@dimen/toolbar_elevation"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <EditText
+        android:id="@+id/edtChatMsg"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/grid6"
+        android:layout_gravity="center"
+        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:hint="@string/say_something"
+        android:maxLines="6"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnSend"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/real_time_chat_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+
 </android.support.constraint.ConstraintLayout>

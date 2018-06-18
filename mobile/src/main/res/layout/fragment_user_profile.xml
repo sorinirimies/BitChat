@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:id="@+id/contUserLogin"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent">
+
+    <!--Logout Layer-->
+    <Button
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/btnFacebookLogin"
+        style="@style/BitChat.Facebook"
+        android:layout_marginEnd="@dimen/grid1"
+        android:layout_marginStart="@dimen/grid1"
+        android:layout_marginTop="32dp"
+        android:drawableStart="@drawable/vector_facebook_logo"
+        android:text="@string/login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSignInLabel"/>
+
+    <Button
+        android:id="@+id/btnGoogleLogin"
+        style="@style/BitChat.Google"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="@dimen/grid1"
+        android:layout_marginStart="@dimen/grid1"
+        android:layout_marginTop="16dp"
+        android:drawableStart="@drawable/vector_google_signin"
+        android:paddingEnd="@dimen/grid1"
+        android:paddingLeft="@dimen/grid1"
+        android:paddingRight="@dimen/grid1"
+        android:paddingStart="@dimen/grid1"
+        android:text="@string/login"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnFacebookLogin"
+        app:layout_constraintVertical_bias="0.0"/>
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/imgUserIcon"
+        android:layout_width="@dimen/grid8"
+        android:layout_height="@dimen/grid8"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_weight="0"
+        android:scaleType="centerCrop"
+        android:src="@drawable/vector_profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:riv_oval="true"/>
+
+    <Button
+        android:id="@+id/btnUserLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/logout_user"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="43dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="16dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
+        app:layout_constraintEnd_toStartOf="@+id/imgUserIcon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Sorin Irimies"/>
+
+    <TextView
+        android:id="@+id/tvEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+        app:layout_constraintEnd_toStartOf="@+id/imgUserIcon"
+        app:layout_constraintTop_toBottomOf="@+id/tvName"
+        tools:text="test@gmail.com"/>
+
+    <TextView
+        android:id="@+id/tvPhoneNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+        app:layout_constraintEnd_toStartOf="@+id/imgUserIcon"
+        app:layout_constraintTop_toBottomOf="@+id/tvEmail"
+        tools:text="07456789"/>
+
+    <TextView
+        android:id="@+id/tvSignInLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="172dp"
+        android:text="@string/sign_in_user"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.452"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/sign_in_user"/>
+
+</android.support.constraint.ConstraintLayout>

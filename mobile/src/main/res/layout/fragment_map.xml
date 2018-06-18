@@ -3,10 +3,10 @@
                                              android:layout_width="match_parent"
                                              android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvMap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Map"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"/>
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapBitchat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:apiKey="@string/google_maps_key"/>
 </android.support.constraint.ConstraintLayout>

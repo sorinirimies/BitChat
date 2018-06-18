@@ -3,22 +3,22 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <item
-        android:id="@+id/action_chat"
+        android:id="@+id/action_chat_groups"
         android:enabled="true"
-        android:icon="@android:drawable/ic_dialog_email"
-        android:title="@string/app_name"
+        android:icon="@drawable/ic_chat"
+        android:title="@string/chat"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_map"
         android:enabled="true"
-        android:icon="@android:drawable/ic_dialog_dialer"
-        android:title="@string/app_name"
+        android:icon="@drawable/ic_map"
+        android:title="@string/map"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_user"
         android:enabled="true"
-        android:icon="@android:drawable/ic_dialog_alert"
-        android:title="@string/app_name"
+        android:icon="@drawable/ic_chat"
+        android:title="@string/user"
         app:showAsAction="ifRoom"/>
 
 </menu>

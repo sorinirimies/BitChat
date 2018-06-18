@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="primaryColor">#03a9f4</color>
+    <color name="primaryLightColor">#67daff</color>
+    <color name="primaryDarkColor">#007ac1</color>
+    <color name="secondaryColor">#e040fb</color>
+    <color name="secondaryLightColor">#ff79ff</color>
+    <color name="secondaryDarkColor">#aa00c7</color>
+    <color name="primaryTextColor">#000000</color>
+    <color name="secondaryTextColor">#000000</color>
+    <color name="darkGrey">#25262e</color>
+    <color name="whiteGrey">#25262e</color>
+    <color name="dark_grey_opacity_60">#9925262e</color>
+    <color name="colorContour">#EEEEEE</color>
+    <color name="colorSuperLightGrey">#B0B4B8</color>
+    <color name="colorFoodCard">#9DC69A</color>
+    <color name="colorCameraFill">#e0995e</color>
+    <color name="colorLightGrey">#6b7888</color>
+    <color name="colorGrey">#5d6773</color>
+    <color name="colorDarkGrey">#3d414c</color>
     <color name="colorWhite">#FFFF</color>
     <color name="colorSettings">#3CA692</color>
     <color name="colorCompassFill">#C75C5C</color>
-    <color name="colorCameraFill">#e0995e</color>
     <color name="colorUserFill">#4F5D73</color>
     <color name="colorGoogleSignin">#4285f4</color>
     <color name="colorFacebookSignin">#3b5998</color>
