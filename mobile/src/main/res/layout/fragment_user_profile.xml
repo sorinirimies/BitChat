@@ -43,12 +43,12 @@
         android:id="@+id/imgUserIcon"
         android:layout_width="@dimen/grid8"
         android:layout_height="@dimen/grid8"
-        android:layout_marginEnd="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
         android:layout_weight="0"
         android:scaleType="centerCrop"
         android:src="@drawable/vector_profile"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:riv_oval="true"/>
 
@@ -70,10 +70,10 @@
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="43dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
-        app:layout_constraintEnd_toStartOf="@+id/imgUserIcon"
+        app:layout_constraintStart_toEndOf="@+id/imgUserIcon"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Sorin Irimies"/>
 
@@ -81,10 +81,10 @@
         android:id="@+id/tvEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="26dp"
         android:layout_marginTop="8dp"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-        app:layout_constraintEnd_toStartOf="@+id/imgUserIcon"
+        app:layout_constraintStart_toEndOf="@+id/imgUserIcon"
         app:layout_constraintTop_toBottomOf="@+id/tvName"
         tools:text="test@gmail.com"/>
 
@@ -92,10 +92,10 @@
         android:id="@+id/tvPhoneNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="26dp"
         android:layout_marginTop="8dp"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-        app:layout_constraintEnd_toStartOf="@+id/imgUserIcon"
+        app:layout_constraintStart_toEndOf="@+id/imgUserIcon"
         app:layout_constraintTop_toBottomOf="@+id/tvEmail"
         tools:text="07456789"/>
 

@@ -6,16 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.listitem_group.view.contGroupItem
 import kotlinx.android.synthetic.main.listitem_group.view.deleteGroup
+import kotlinx.android.synthetic.main.listitem_group.view.editGroup
 import kotlinx.android.synthetic.main.listitem_group.view.tvGroupName
 import ro.cluj.sorin.bitchat.R
 import ro.cluj.sorin.bitchat.model.ChatGroup
 
-internal typealias ChatGroupClicked = (ChatGroup) -> Unit
-internal typealias ChatGroupDeletionSelected = (ChatGroup) -> Unit
-
-class GroupsAdapter(private val chatGroupClicked: ChatGroupClicked,
-  private val chatGroupDeletionSelected: ChatGroupDeletionSelected
-) :
+class GroupsAdapter(private val groupActionsListener: GroupActionsListener) :
   RecyclerView.Adapter<GroupsAdapter.GroupViewHolder>() {
   private val groups = arrayListOf<ChatGroup>()
 
@@ -25,20 +21,22 @@ class GroupsAdapter(private val chatGroupClicked: ChatGroupClicked,
   override fun getItemCount() = groups.size
 
   override fun onBindViewHolder(holder: GroupViewHolder, position: Int) {
-    holder.bind(groups[position], chatGroupClicked, chatGroupDeletionSelected)
+    holder.bind(groups[position], groupActionsListener)
   }
 
   class GroupViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    fun bind(group: ChatGroup, chatGroupClicked: ChatGroupClicked, chatGroupDeletionSelected: ChatGroupDeletionSelected) {
+    fun bind(group: ChatGroup, groupActionsListener: GroupActionsListener) {
       itemView.apply {
         tvGroupName.text = group.name
-        contGroupItem.setOnClickListener { chatGroupClicked.invoke(group) }
-        deleteGroup.setOnClickListener { chatGroupDeletionSelected.invoke(group) }
+        contGroupItem.setOnClickListener { groupActionsListener.selectGroup(group) }
+        deleteGroup.setOnClickListener { groupActionsListener.deleteGroup(group) }
+        editGroup.setOnClickListener { groupActionsListener.editGroup(group) }
       }
     }
   }
 
   fun addItem(item: ChatGroup) {
+    if (groups.map { it.id }.contains(item.id)) return
     groups.add(item)
     notifyItemInserted(groups.indexOf(item))
   }

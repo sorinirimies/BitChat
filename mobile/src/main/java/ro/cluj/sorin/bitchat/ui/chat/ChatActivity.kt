@@ -1,13 +1,15 @@
 package ro.cluj.sorin.bitchat.ui.chat
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.android.synthetic.main.fragment_chat.btnSend
-import kotlinx.android.synthetic.main.fragment_chat.edtChatMsg
-import kotlinx.android.synthetic.main.fragment_chat.rvConversation
+import kotlinx.android.synthetic.main.activity_chat.btnSend
+import kotlinx.android.synthetic.main.activity_chat.edtChatMsg
+import kotlinx.android.synthetic.main.activity_chat.rvConversation
+import kotlinx.android.synthetic.main.activity_chat.tvGroupNameTitle
 import kotlinx.coroutines.experimental.channels.BroadcastChannel
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
@@ -18,10 +20,10 @@ import ro.cluj.sorin.bitchat.model.ChatGroup
 import ro.cluj.sorin.bitchat.model.Message
 import ro.cluj.sorin.bitchat.model.User
 import ro.cluj.sorin.bitchat.ui.BaseActivity
-import ro.cluj.sorin.bitchat.ui.user.ConversationAdapter
 import ro.cluj.sorin.bitchat.utils.toBitChatUser
 import timber.log.Timber
 import java.util.Calendar
+import java.util.UUID
 
 const val PARAM_CHAT_GROUP = " ro.cluj.sorin.bitchat.CHAT_GROUP"
 
@@ -32,10 +34,13 @@ class ChatActivity : BaseActivity(), KodeinAware, ChatView {
   private lateinit var conversationAdapter: ConversationAdapter
   private var user: User? = null
   private var group: ChatGroup? = null
+  @SuppressLint("SetTextI18n")
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.fragment_chat)
+    setContentView(R.layout.activity_chat)
     group = intent.getParcelableExtra(PARAM_CHAT_GROUP)
+    group?.let { tvGroupNameTitle.text = "${getString(R.string.group_title_label)} ${it.name}" }
+
     launch {
       channelFirebaseUser.openSubscription().consumeEach {
         user = it.toBitChatUser()
@@ -54,9 +59,14 @@ class ChatActivity : BaseActivity(), KodeinAware, ChatView {
       user?.apply {
         group?.let { group ->
           if (TextUtils.isEmpty(edtChatMsg.text.toString())) return@let
-          val msg = Message(group.name, id, name, true, edtChatMsg.text.toString(), Calendar.getInstance().timeInMillis)
-          conversationAdapter.addMessage(msg)
-          db.collection("message").add(msg)
+          val msg = Message(UUID.randomUUID().toString(),
+              group.id,
+              id,
+              name,
+              true,
+              edtChatMsg.text.toString(),
+              Calendar.getInstance().timeInMillis)
+          messageRef.document(msg.messageId).set(msg)
           edtChatMsg.setText("")
         }
       }
@@ -65,10 +75,23 @@ class ChatActivity : BaseActivity(), KodeinAware, ChatView {
   }
 
   private fun addChatDbListener() {
-    messageRef.whereEqualTo("name", group?.name).addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+    messageRef.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
       if (firebaseFirestoreException != null) return@addSnapshotListener
-      querySnapshot?.forEach { message ->
-        Timber.d(message.data.toString())
+      querySnapshot?.forEach {
+        val data = it.data
+        val groupId = data["groupId"].toString()
+        if (groupId == group?.id) {
+          val isSending = data["userId"].toString() == user?.id
+          conversationAdapter.addItem(
+              Message(data["messageId"].toString(),
+                  data["groupId"].toString(),
+                  data["userId"].toString(),
+                  data["userName"].toString(),
+                  isSending,
+                  data["message"].toString(),
+                  data["time"].toString().toLong()))
+
+        }
       }
     }
   }

@@ -7,13 +7,19 @@ import ro.cluj.sorin.bitchat.model.ChatGroup
 class GroupsPresenter(private val db: FirebaseFirestore) : BasePresenter<GroupsView>() {
 
   fun createChatGroup(group: ChatGroup) {
-    db.collection("group").document(group.name).set(group).addOnSuccessListener {
+    db.collection("group").document(group.id).set(group).addOnSuccessListener {
       view.showChatGroupCreated(group)
     }
   }
 
+  fun editChatGroup(group: ChatGroup) {
+    db.collection("group").document(group.id).update("name", group.name).addOnSuccessListener {
+      view.showChatGroupEdited(group)
+    }
+  }
+
   fun deleteChatGroup(group: ChatGroup) {
-    db.collection("group").document(group.name).delete().addOnSuccessListener {
+    db.collection("group").document(group.id).delete().addOnSuccessListener {
       view.showChatGroupDeleted(group)
     }
   }

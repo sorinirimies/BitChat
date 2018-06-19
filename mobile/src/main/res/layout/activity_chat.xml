@@ -6,6 +6,17 @@
                                              android:layout_height="match_parent"
                                              tools:layout_editor_absoluteY="81dp">
 
+    <TextView
+        android:id="@+id/tvGroupNameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Fun Chat"/>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvConversation"
@@ -19,7 +30,7 @@
         app:layout_constraintBottom_toTopOf="@+id/edtChatMsg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/tvGroupNameTitle"
         app:layout_constraintVertical_bias="0.703">
     </android.support.v7.widget.RecyclerView>
 
@@ -52,21 +63,11 @@
         android:layout_weight="1"
         android:background="@android:color/transparent"
         android:hint="@string/say_something"
+        android:inputType="textAutoComplete|textAutoCorrect|textMultiLine"
         android:maxLines="6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnSend"
         app:layout_constraintStart_toStartOf="parent"/>
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/real_time_chat_label"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
 
 
 </android.support.constraint.ConstraintLayout>

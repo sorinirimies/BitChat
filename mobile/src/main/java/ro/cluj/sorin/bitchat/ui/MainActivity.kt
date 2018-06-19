@@ -14,7 +14,7 @@ import org.kodein.di.generic.instance
 import ro.cluj.sorin.bitchat.BaseFragAdapter
 import ro.cluj.sorin.bitchat.R
 import ro.cluj.sorin.bitchat.ui.groups.GroupsFragment
-import ro.cluj.sorin.bitchat.ui.map.UsersLocationMapFragment
+import ro.cluj.sorin.bitchat.ui.map.GroupsMapFragment
 import ro.cluj.sorin.bitchat.ui.user.UserProfileFragment
 import ro.cluj.sorin.bitchat.utils.EventBus
 import ro.cluj.sorin.bitchat.utils.FadePageTransformer
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, MainView {
     pagerContFragments.apply {
       setPageTransformer(true, FadePageTransformer())
       this.adapter = BaseFragAdapter(supportFragmentManager,
-          arrayListOf(GroupsFragment(), UsersLocationMapFragment(), UserProfileFragment()))
+          arrayListOf(GroupsFragment(), GroupsMapFragment(), UserProfileFragment()))
       offscreenPageLimit = 3
       onPageSelected {
         when (it) {

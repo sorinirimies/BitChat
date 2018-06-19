@@ -19,10 +19,12 @@ import ro.cluj.sorin.bitchat.model.ChatGroup
 import ro.cluj.sorin.bitchat.ui.BaseFragment
 import ro.cluj.sorin.bitchat.ui.chat.ChatActivity
 import ro.cluj.sorin.bitchat.ui.chat.PARAM_CHAT_GROUP
+import java.util.UUID
 
 class GroupsFragment : BaseFragment(), KodeinAware, GroupsView {
   override val kodein by closestKodein()
   private val presenter: GroupsPresenter by instance()
+  private val groupsRef by lazy { db.collection("group") }
   private lateinit var groupsAdapter: GroupsAdapter
   override fun getLayoutId() = R.layout.fragment_groups
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,14 +35,33 @@ class GroupsFragment : BaseFragment(), KodeinAware, GroupsView {
     }
     rvGroups.apply {
       layoutManager = LinearLayoutManager(activity)
-      groupsAdapter = GroupsAdapter({
-        startActivity(Intent(activity, ChatActivity::class.java).apply {
-          putExtra(PARAM_CHAT_GROUP, it)
-        })
-      }, {
-        showDeleteGroupDialog(it)
+      groupsAdapter = GroupsAdapter(object : GroupActionsListener {
+        override fun selectGroup(group: ChatGroup) {
+          startActivity(Intent(activity, ChatActivity::class.java).apply {
+            putExtra(PARAM_CHAT_GROUP, group)
+          })
+        }
+
+        override fun deleteGroup(group: ChatGroup) {
+          showDeleteGroupDialog(group)
+        }
+
+        override fun editGroup(group: ChatGroup) {
+          showEditGroupDialog(group)
+        }
       })
       adapter = groupsAdapter
+    }
+    addGroupsDbChangeListener()
+  }
+
+  private fun addGroupsDbChangeListener() {
+    groupsRef.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+      if (firebaseFirestoreException != null) return@addSnapshotListener
+      groupsAdapter.clearItems()
+      querySnapshot?.forEach { message ->
+        groupsAdapter.addItem(ChatGroup(message.data["id"].toString(), message.data["name"].toString()))
+      }
     }
   }
 
@@ -57,17 +78,33 @@ class GroupsFragment : BaseFragment(), KodeinAware, GroupsView {
       setMessage("${getString(R.string.create_group_message)} ${v.findViewById<EditText>(R.id.edtGroupName).text}")
       setPositiveButton(R.string.create_group) { _, _ ->
         val groupName = v.findViewById<EditText>(R.id.edtGroupName).text.toString()
-        val group = ChatGroup(groupName)
+        val group = ChatGroup(UUID.randomUUID().toString(), groupName)
         presenter.createChatGroup(group)
       }
+      setNegativeButton(R.string.cancel) { _, _ -> }
+    }
+  }
+
+  private fun showEditGroupDialog(group: ChatGroup) = context?.let {
+    alertDialog(it) {
+      val v = layoutInflater.init(R.layout.dialog_create_group)
+      setView(v)
+      setTitle(R.string.edit_group_label)
+      setMessage(getString(R.string.edit_group_message))
+      setPositiveButton(R.string.edit_group) { _, _ ->
+        val groupName = v.findViewById<EditText>(R.id.edtGroupName).text.toString()
+        group.name = groupName
+        presenter.editChatGroup(group)
+      }
+      setNegativeButton(R.string.cancel) { _, _ -> }
     }
   }
 
   private fun showDeleteGroupDialog(group: ChatGroup) = context?.let {
     alertDialog(it) {
       setTitle(R.string.delete_group_label)
-      setMessage("${getString(R.string.delete_group_label)} $group ?")
-      setPositiveButton(R.string.create_group) { _, _ ->
+      setMessage("${getString(R.string.delete_group_label)} ${group.name} ?")
+      setPositiveButton(R.string.delete_group) { _, _ ->
         presenter.deleteChatGroup(group)
       }
       setNegativeButton(R.string.cancel) { _, _ -> }
@@ -76,11 +113,13 @@ class GroupsFragment : BaseFragment(), KodeinAware, GroupsView {
 
   override fun showChatGroupCreated(group: ChatGroup) {
     snack(contGroupsFragment, "${group.name} ${getString(R.string.group_created_confirmation)}")
-    groupsAdapter.addItem(group)
   }
 
   override fun showChatGroupDeleted(group: ChatGroup) {
     snack(contGroupsFragment, "${group.name} ${getString(R.string.group_deleted_confirmation)}")
-    groupsAdapter.removeItem(group)
+  }
+
+  override fun showChatGroupEdited(group: ChatGroup) {
+    snack(contGroupsFragment, "${group.name} ${getString(R.string.group_edit_confirmation)}")
   }
 }

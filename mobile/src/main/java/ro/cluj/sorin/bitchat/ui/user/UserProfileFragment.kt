@@ -51,9 +51,8 @@ class UserProfileFragment : BaseFragment(), UserProfileView,
   GoogleApiClient.OnConnectionFailedListener,
   FacebookCallback<LoginResult> {
   private val presenter: UserProfilePresenter by instance()
-  private val callbackManager by lazy {
-    CallbackManager.Factory.create()
-  }
+  private val callbackManager by lazy { CallbackManager.Factory.create() }
+  private val userRef by lazy { db.collection("user") }
 
   private val gApiClient by lazy {
     activity?.let {
@@ -117,7 +116,7 @@ class UserProfileFragment : BaseFragment(), UserProfileView,
   }
 
   override fun onError(error: FacebookException?) {
-    Timber.e(error)
+    Timber.e(error?.message)
     presenter.showUserLoginFailed(error?.localizedMessage)
   }
 
@@ -221,7 +220,7 @@ class UserProfileFragment : BaseFragment(), UserProfileView,
   }
 
   override fun createOrUpdateBitChatUser(bitChatUser: User) {
-    db.collection("user").document(bitChatUser.id).set(bitChatUser)
+    userRef.document(bitChatUser.id).set(bitChatUser)
   }
 
   override fun logoutUser() {

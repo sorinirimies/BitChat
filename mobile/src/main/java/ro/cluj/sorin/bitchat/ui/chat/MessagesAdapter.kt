@@ -1,4 +1,4 @@
-package ro.cluj.sorin.bitchat.ui.user
+package ro.cluj.sorin.bitchat.ui.chat
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -20,9 +20,10 @@ private const val VIEW_TYPE_OTHER_MESSAGE = 2
 class ConversationAdapter : RecyclerView.Adapter<MessageViewHolder>() {
   private val messages: ArrayList<Message> = ArrayList()
 
-  fun addMessage(message: Message) {
+  fun addItem(message: Message) {
+    if (messages.map { it.messageId }.contains(message.messageId)) return
     messages.add(message)
-    notifyDataSetChanged()
+    notifyItemInserted(messages.indexOf(message))
   }
 
   override fun getItemCount(): Int {

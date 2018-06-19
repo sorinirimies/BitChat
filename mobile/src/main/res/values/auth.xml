@@ -4,6 +4,7 @@
     <string name="facebook_app_id">167605323919336</string>
     <string name="fb_login_protocol_scheme">fb167605323919336</string>
 
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBtkl2wnHN16OecmYlvWfGru6B3jUYDnFg</string>
-
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBUHwSaBpa1rYDkFOx4WUhuUX20L4MzKd0</string>
+    <!-- hockey app -->
+    <string name="hockey_app_id" translatable="false">8f097976e17a47f689b5e57ffefc06e0</string>
 </resources>

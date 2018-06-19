@@ -6,5 +6,6 @@ import ro.cluj.sorin.bitchat.model.ChatGroup
 interface GroupsView : MvpBase.View {
 
   fun showChatGroupCreated(group: ChatGroup)
+  fun showChatGroupEdited(group: ChatGroup)
   fun showChatGroupDeleted(group: ChatGroup)
 }
