@@ -1,7 +1,6 @@
 package ro.cluj.sorin.bitchat;
 
 import android.support.annotation.Nullable;
-
 /**
  * Created by Sorin Albu-Irimies on 5/18/2018.
  */
