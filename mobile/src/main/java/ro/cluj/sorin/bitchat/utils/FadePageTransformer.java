@@ -3,6 +3,9 @@ package ro.cluj.sorin.bitchat.utils;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 public  class FadePageTransformer implements ViewPager.PageTransformer {
     public void transformPage(View view, float position) {
 

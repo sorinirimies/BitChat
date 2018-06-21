@@ -1,5 +1,8 @@
 package ro.cluj.sorin.bitchat.mqtt
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 interface MqttManager {
 
     /**

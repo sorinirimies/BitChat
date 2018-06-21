@@ -9,8 +9,11 @@ import org.kodein.di.android.androidModule
 import ro.cluj.sorin.bitchat.injection.firebaseModule
 import ro.cluj.sorin.bitchat.injection.networkModule
 import ro.cluj.sorin.bitchat.injection.uiPresentersModule
-import ro.cluj.sorin.bitchat.mqtt.mqttModule
+import ro.cluj.sorin.bitchat.injection.mqttModule
 
+/**
+ * Created by Sorin Albu-Irimies on 5/18/2018.
+ */
 class BitChatApplication : Application(), KodeinAware {
   override fun onCreate() {
     super.onCreate()

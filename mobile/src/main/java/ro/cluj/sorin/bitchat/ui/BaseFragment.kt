@@ -13,6 +13,9 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 abstract class BaseFragment : Fragment(), KodeinAware {
 
   override val kodein by closestKodein()

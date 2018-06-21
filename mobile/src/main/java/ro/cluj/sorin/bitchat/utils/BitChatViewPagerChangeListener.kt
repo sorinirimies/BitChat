@@ -2,6 +2,9 @@ package ro.cluj.sorin.bitchat.utils
 
 import android.support.v4.view.ViewPager
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 interface BitChatViewPagerChangeListener : ViewPager.OnPageChangeListener {
     override fun onPageScrollStateChanged(state: Int) = Unit
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit

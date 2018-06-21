@@ -10,6 +10,9 @@ import ro.cluj.sorin.bitchat.ui.groups.GroupsPresenter
 import ro.cluj.sorin.bitchat.ui.map.GroupsMapPresenter
 import ro.cluj.sorin.bitchat.ui.user.UserProfilePresenter
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 val uiPresentersModule = Kodein.Module {
   bind<GroupsMapPresenter>() with provider { GroupsMapPresenter() }
   bind<UserProfilePresenter>() with provider { UserProfilePresenter() }

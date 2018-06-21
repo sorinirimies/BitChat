@@ -4,6 +4,9 @@ import com.google.firebase.auth.FirebaseUser
 import ro.cluj.sorin.bitchat.BasePresenter
 import ro.cluj.sorin.bitchat.utils.toBitChatUser
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 class UserProfilePresenter : BasePresenter<UserProfileView>() {
   fun showUserLoginFailed(msg: String?) {
     view.showUserLoggedInFailed(msg)

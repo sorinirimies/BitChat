@@ -18,6 +18,9 @@ import ro.cluj.sorin.bitchat.R
 import ro.cluj.sorin.bitchat.ui.BaseFragment
 import ro.cluj.sorin.bitchat.utils.loadMapStyle
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 class GroupsMapFragment : BaseFragment(), KodeinAware, GroupsMapView {
 
   override val kodein by closestKodein()
@@ -50,7 +53,7 @@ class GroupsMapFragment : BaseFragment(), KodeinAware, GroupsMapView {
       }
     }
   }
-
+  
   override fun onDestroyView() {
     super.onDestroyView()
     presenter.detachView()

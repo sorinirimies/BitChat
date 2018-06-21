@@ -47,6 +47,9 @@ import java.util.Arrays
 
 private const val RC_SIGN_IN = 78
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 class UserProfileFragment : BaseFragment(), UserProfileView,
   GoogleApiClient.OnConnectionFailedListener,
   FacebookCallback<LoginResult> {

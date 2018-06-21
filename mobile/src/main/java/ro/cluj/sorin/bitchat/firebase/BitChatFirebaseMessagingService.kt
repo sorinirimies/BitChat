@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.IBinder
 
 /**
- * Created by sorin on 12.03.17.
+ * Created by sorin on 12.05.18.
  */
 class BitChatFirebaseMessagingService : Service() {
 

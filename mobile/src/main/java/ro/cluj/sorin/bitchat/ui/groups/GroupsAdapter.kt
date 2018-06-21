@@ -11,6 +11,9 @@ import kotlinx.android.synthetic.main.listitem_group.view.tvGroupName
 import ro.cluj.sorin.bitchat.R
 import ro.cluj.sorin.bitchat.model.ChatGroup
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 class GroupsAdapter(private val groupActionsListener: GroupActionsListener) :
   RecyclerView.Adapter<GroupsAdapter.GroupViewHolder>() {
   private val groups = arrayListOf<ChatGroup>()

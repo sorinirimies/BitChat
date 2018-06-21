@@ -8,7 +8,9 @@ import com.google.firebase.storage.FirebaseStorage
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
-
+/**
+ * Created by sorin on 12.05.18.
+ */
 abstract class BaseActivity : AppCompatActivity(), KodeinAware {
   override val kodein by closestKodein()
   val firebaseAuth: FirebaseAuth by instance()

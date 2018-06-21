@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 
 ext {
     supportLibVersion = '27.1.1'
-    coroutinesVersion = '0.22.5'
+    coroutinesVersion = '0.23.3'
     playServicesVersion = '15.0.0'
     lifecycleVersion = "2.0.0-alpha1"
     ktxVersion = "1.0.0-alpha1"

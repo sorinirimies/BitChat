@@ -21,6 +21,9 @@ import ro.cluj.sorin.bitchat.ui.chat.ChatActivity
 import ro.cluj.sorin.bitchat.ui.chat.PARAM_CHAT_GROUP
 import java.util.UUID
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 class GroupsFragment : BaseFragment(), KodeinAware, GroupsView {
   override val kodein by closestKodein()
   private val presenter: GroupsPresenter by instance()

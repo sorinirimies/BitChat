@@ -17,6 +17,9 @@ import ro.cluj.sorin.bitchat.utils.fromMillisToTimeString
 private const val VIEW_TYPE_MY_MESSAGE = 1
 private const val VIEW_TYPE_OTHER_MESSAGE = 2
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 class ConversationAdapter : RecyclerView.Adapter<MessageViewHolder>() {
   private val messages: ArrayList<Message> = ArrayList()
 

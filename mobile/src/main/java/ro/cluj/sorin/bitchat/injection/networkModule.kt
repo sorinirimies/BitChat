@@ -10,8 +10,11 @@ import org.kodein.di.generic.singleton
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 val networkModule = Kodein.Module{
-  val baseUrl = "https://api.legoomo.com/"
+  val baseUrl = "https://localhost:5000"
   val moshi: Moshi by lazy {
     Moshi.Builder()
         .build()

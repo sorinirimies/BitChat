@@ -2,6 +2,9 @@ package ro.cluj.sorin.bitchat;
 
 import android.support.annotation.Nullable;
 
+/**
+ * Created by Sorin Albu-Irimies on 5/18/2018.
+ */
 public abstract class BasePresenter<V extends MvpBase.View> implements MvpBase.Presenter<V> {
     private V view;
 

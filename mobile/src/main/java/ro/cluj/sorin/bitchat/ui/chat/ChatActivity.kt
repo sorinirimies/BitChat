@@ -25,8 +25,11 @@ import timber.log.Timber
 import java.util.Calendar
 import java.util.UUID
 
-const val PARAM_CHAT_GROUP = " ro.cluj.sorin.bitchat.CHAT_GROUP"
+internal const val PARAM_CHAT_GROUP = " ro.cluj.sorin.bitchat.CHAT_GROUP"
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 class ChatActivity : BaseActivity(), KodeinAware, ChatView {
   private val presenter: ChatPresenter by instance()
   private val channelFirebaseUser by lazy { BroadcastChannel<FirebaseUser>(1) }

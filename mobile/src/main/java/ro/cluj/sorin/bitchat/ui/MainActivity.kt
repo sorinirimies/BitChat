@@ -25,6 +25,9 @@ private const val PAGE_CHAT = 0
 private const val PAGE_MAP = 1
 private const val PAGE_USER = 2
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 class MainActivity : AppCompatActivity(), KodeinAware, MainView {
   override val kodein by closestKodein()
   private val firebaseAuth: FirebaseAuth by instance()

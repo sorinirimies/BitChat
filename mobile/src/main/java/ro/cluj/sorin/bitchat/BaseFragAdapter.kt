@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import java.util.*
 
 /**
- * Created by Sorin Albu-Irimies on 8/18/2018.
+ * Created by Sorin Albu-Irimies on 5/18/2018.
  */
 class BaseFragAdapter(fm: FragmentManager, private var fragments: ArrayList<Fragment>) : FragmentPagerAdapter(fm) {
 

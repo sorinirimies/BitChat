@@ -11,6 +11,9 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import timber.log.Timber
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 fun GoogleMap.createAndAddMarker(latLng: LatLng, @DrawableRes markerResource: Int) {
   this.addMarker(MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(markerResource)))
 }

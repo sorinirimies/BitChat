@@ -4,6 +4,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import ro.cluj.sorin.bitchat.BasePresenter
 import ro.cluj.sorin.bitchat.model.ChatGroup
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 class GroupsPresenter(private val db: FirebaseFirestore) : BasePresenter<GroupsView>() {
 
   fun createChatGroup(group: ChatGroup) {

@@ -5,7 +5,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService
 import timber.log.Timber
 
 /**
- * Created by sorin on 12.03.17.
+ * Created by sorin on 12.05.18.
  */
 class BitChatFirebaseInstanceIDService : FirebaseInstanceIdService() {
     /**

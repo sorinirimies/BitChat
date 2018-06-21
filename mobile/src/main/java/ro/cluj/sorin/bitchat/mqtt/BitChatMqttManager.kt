@@ -18,6 +18,9 @@ import timber.log.Timber
 import java.util.Timer
 import kotlin.concurrent.fixedRateTimer
 
+/**
+ * Created by sorin on 12.05.18.
+ */
 class TotemzMqttManager(private val application: Application, private val accountManager: FirebaseAuth) : MqttManager {
   private var maxNumberOfRetries = 4
   private var retryInterval = 4000L
@@ -98,7 +101,7 @@ class TotemzMqttManager(private val application: Application, private val accoun
     }
   }
 
-  fun sendConnectionStatus(isConnected: Boolean) = launch { mqttConnectionStateChannel.send(isConnected) }
+  fun sendConnectionStatus(isConnected: Boolean = false) = launch { mqttConnectionStateChannel.send(isConnected) }
 
   fun sendMqttMessage(message: Pair<String, MqttMessage>) = launch { mqttMessageChannel.send(message) }
 
