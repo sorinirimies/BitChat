@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "885580868289",
+    "firebase_url": "https://bitchat-a2ee1.firebaseio.com",
+    "project_id": "bitchat-a2ee1",
+    "storage_bucket": "bitchat-a2ee1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:885580868289:android:f20f6c54951318de",
+        "android_client_info": {
+          "package_name": "ro.cluj.sorin.bitchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "885580868289-dqfrm22gddl1o22l794as96fogl8ja1b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ro.cluj.sorin.bitchat",
+            "certificate_hash": "9a5429c0ffbd31cae08aeb1288cda16bcb1d2611"
+          }
+        },
+        {
+          "client_id": "885580868289-k8p2d9l6a41p0e3a43tpd7l0cidsqfc9.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "885580868289-k8p2d9l6a41p0e3a43tpd7l0cidsqfc9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUHwSaBpa1rYDkFOx4WUhuUX20L4MzKd0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "885580868289-k8p2d9l6a41p0e3a43tpd7l0cidsqfc9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
