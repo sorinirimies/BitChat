@@ -40,10 +40,8 @@ val networkModule = Kodein.Module {
         .baseUrl(baseUrl)
         .build()
   }
-
-  //  MQTT
-  bind<MqttManager>() with provider { BitChatManager(instance(), instance()) }
-
   //  Nearby Connections
   bind<ConnectionsClient>() with singleton { Nearby.getConnectionsClient(instance()) }
+  //  MQTT
+  bind<MqttManager>() with provider { BitChatManager(instance(), instance()) }
 }

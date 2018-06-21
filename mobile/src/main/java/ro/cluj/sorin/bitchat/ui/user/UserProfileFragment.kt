@@ -32,6 +32,8 @@ import kotlinx.android.synthetic.main.fragment_user_profile.btnUserLogout
 import kotlinx.android.synthetic.main.fragment_user_profile.contUserLogin
 import kotlinx.android.synthetic.main.fragment_user_profile.imgUserIcon
 import kotlinx.android.synthetic.main.fragment_user_profile.tvEmail
+import kotlinx.android.synthetic.main.fragment_user_profile.tvId
+import kotlinx.android.synthetic.main.fragment_user_profile.tvLastSignIn
 import kotlinx.android.synthetic.main.fragment_user_profile.tvName
 import kotlinx.android.synthetic.main.fragment_user_profile.tvPhoneNumber
 import kotlinx.android.synthetic.main.fragment_user_profile.tvSignInLabel
@@ -42,6 +44,7 @@ import org.kodein.di.generic.instance
 import ro.cluj.sorin.bitchat.R
 import ro.cluj.sorin.bitchat.model.User
 import ro.cluj.sorin.bitchat.ui.BaseFragment
+import ro.cluj.sorin.bitchat.utils.fromMillisToTimeString
 import timber.log.Timber
 import java.util.Arrays
 
@@ -203,6 +206,11 @@ class UserProfileFragment : BaseFragment(), UserProfileView,
     msg?.let { snack(contUserLogin, it) }
   }
 
+  private val loginComponents by lazy { listOf(btnFacebookLogin, btnGoogleLogin, tvSignInLabel) }
+  private val userDetailsComponents by lazy {
+    listOf(imgUserIcon, btnUserLogout, tvEmail, tvName, tvPhoneNumber, tvId, tvLastSignIn)
+  }
+
   override fun showUserIsLoggedIn(user: FirebaseUser) {
     user.apply {
       Picasso.with(context).load(photoUrl)
@@ -212,14 +220,16 @@ class UserProfileFragment : BaseFragment(), UserProfileView,
       tvName.text = displayName
       tvEmail.text = email
       tvPhoneNumber.text = phoneNumber
+      tvId.text = id.toString()
+      tvLastSignIn.text = metadata?.lastSignInTimestamp?.fromMillisToTimeString()
     }
-    listOf(imgUserIcon, btnUserLogout, tvEmail, tvName, tvPhoneNumber).forEach { it.animateVisible() }
-    listOf(btnFacebookLogin, btnGoogleLogin, tvSignInLabel).forEach { it.animateGone() }
+    userDetailsComponents.forEach { it.animateVisible() }
+    loginComponents.forEach { it.animateGone() }
   }
 
   override fun showUserIsLoggedOut() {
-    listOf(imgUserIcon, btnUserLogout, tvEmail, tvName, tvPhoneNumber).forEach { it.animateGone() }
-    listOf(btnFacebookLogin, btnGoogleLogin, tvSignInLabel).forEach { it.animateVisible() }
+    userDetailsComponents.forEach { it.animateGone() }
+    loginComponents.forEach { it.animateVisible() }
   }
 
   override fun createOrUpdateBitChatUser(bitChatUser: User) {

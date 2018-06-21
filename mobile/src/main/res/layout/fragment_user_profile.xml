@@ -100,6 +100,29 @@
         tools:text="07456789"/>
 
     <TextView
+        android:id="@+id/tvId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toEndOf="@+id/imgUserIcon"
+        app:layout_constraintTop_toBottomOf="@+id/tvPhoneNumber"
+        tools:text="HEIDBHWO"/>
+
+    <TextView
+        android:id="@+id/tvLastSignIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toEndOf="@+id/imgUserIcon"
+        app:layout_constraintTop_toBottomOf="@+id/tvId"
+        tools:text="20:30"/>
+
+
+    <TextView
         android:id="@+id/tvSignInLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
