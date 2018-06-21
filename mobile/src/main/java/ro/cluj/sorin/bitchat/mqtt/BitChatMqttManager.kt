@@ -21,7 +21,7 @@ import kotlin.concurrent.fixedRateTimer
 /**
  * Created by sorin on 12.05.18.
  */
-class TotemzMqttManager(private val application: Application, private val accountManager: FirebaseAuth) : MqttManager {
+class BitChatManager(private val application: Application, private val accountManager: FirebaseAuth) : MqttManager {
   private var maxNumberOfRetries = 4
   private var retryInterval = 4000L
   private var topics: Array<String> = arrayOf()
@@ -39,8 +39,8 @@ class TotemzMqttManager(private val application: Application, private val accoun
       Timber.w("connect was called although the mqttClient is already connected")
       return
     }
-    this@TotemzMqttManager.topics = topics
-    this@TotemzMqttManager.qos = qos
+    this@BitChatManager.topics = topics
+    this@BitChatManager.qos = qos
     val clientId = Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID)
     mqttClient = MqttAsyncClient(serverURI, clientId, MemoryPersistence())
     mqttClient?.setCallback(object : MqttCallback {

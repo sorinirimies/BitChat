@@ -55,8 +55,8 @@ androidExtensions {
     experimental = true
 }
 dependencies {
-    wearApp project(':wear')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
     //noinspection GradleCompatible
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
     implementation "com.android.support:design:$supportLibVersion"
@@ -65,7 +65,6 @@ dependencies {
     /*Firebase*/
     implementation 'com.google.firebase:firebase-core:15.0.2'
     implementation 'com.google.firebase:firebase-messaging:15.0.2'
-    implementation "com.google.android.gms:play-services-wearable:$playServicesVersion"
     implementation "com.google.firebase:firebase-firestore:$playServicesVersion"
     implementation "com.google.firebase:firebase-perf:$playServicesVersion"
     implementation "com.google.firebase:firebase-auth:$playServicesVersion"
@@ -75,6 +74,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-maps:$playServicesVersion"
     implementation "com.google.android.gms:play-services-location:$playServicesVersion"
     implementation "com.google.android.gms:play-services-auth:$playServicesVersion"
+    implementation "com.google.android.gms:play-services-nearby:$playServicesVersion"
 
     /*Android Jetpack*/
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
@@ -83,7 +83,6 @@ dependencies {
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
 
     implementation 'com.markodevcic.peko:peko:0.31'
-
 
     /*My utils*/
     implementation "com.greenspand:kotlin-ext:$kotlinExtVersion"
