@@ -1,8 +1,5 @@
 package ro.cluj.sorin.bitchat.injection
 
-import com.google.android.gms.nearby.Nearby
-import com.google.android.gms.nearby.connection.Connections
-import com.google.android.gms.nearby.connection.ConnectionsClient
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
@@ -14,7 +11,7 @@ import org.kodein.di.generic.provider
 import org.kodein.di.generic.singleton
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import ro.cluj.sorin.bitchat.mqtt.BitChatManager
+import ro.cluj.sorin.bitchat.mqtt.BitChatMqttManager
 import ro.cluj.sorin.bitchat.mqtt.MqttManager
 
 /**
@@ -40,8 +37,6 @@ val networkModule = Kodein.Module {
         .baseUrl(baseUrl)
         .build()
   }
-  //  Nearby Connections
-  bind<ConnectionsClient>() with singleton { Nearby.getConnectionsClient(instance()) }
   //  MQTT
-  bind<MqttManager>() with provider { BitChatManager(instance(), instance()) }
+  bind<MqttManager>() with provider { BitChatMqttManager(instance(), instance()) }
 }

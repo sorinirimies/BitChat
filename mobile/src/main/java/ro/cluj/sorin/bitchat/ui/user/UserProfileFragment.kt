@@ -1,5 +1,6 @@
 package ro.cluj.sorin.bitchat.ui.user
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -23,6 +24,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.greenspand.kotlin_ext.animateGone
 import com.greenspand.kotlin_ext.animateVisible
 import com.greenspand.kotlin_ext.editPrefs
+import com.greenspand.kotlin_ext.setBoolean
 import com.greenspand.kotlin_ext.setString
 import com.greenspand.kotlin_ext.snack
 import com.squareup.picasso.Picasso
@@ -31,6 +33,7 @@ import kotlinx.android.synthetic.main.fragment_user_profile.btnGoogleLogin
 import kotlinx.android.synthetic.main.fragment_user_profile.btnUserLogout
 import kotlinx.android.synthetic.main.fragment_user_profile.contUserLogin
 import kotlinx.android.synthetic.main.fragment_user_profile.imgUserIcon
+import kotlinx.android.synthetic.main.fragment_user_profile.toggleStartNearbyChat
 import kotlinx.android.synthetic.main.fragment_user_profile.tvEmail
 import kotlinx.android.synthetic.main.fragment_user_profile.tvId
 import kotlinx.android.synthetic.main.fragment_user_profile.tvLastSignIn
@@ -44,6 +47,7 @@ import org.kodein.di.generic.instance
 import ro.cluj.sorin.bitchat.R
 import ro.cluj.sorin.bitchat.model.User
 import ro.cluj.sorin.bitchat.ui.BaseFragment
+import ro.cluj.sorin.bitchat.ui.nearby.PREF_IS_NEARBY_ENABLED
 import ro.cluj.sorin.bitchat.utils.fromMillisToTimeString
 import timber.log.Timber
 import java.util.Arrays
@@ -56,10 +60,11 @@ private const val RC_SIGN_IN = 78
 class UserProfileFragment : BaseFragment(), UserProfileView,
   GoogleApiClient.OnConnectionFailedListener,
   FacebookCallback<LoginResult> {
+
   private val presenter: UserProfilePresenter by instance()
+  private var userSettingsListener: UserSettingsListener? = null
   private val callbackManager by lazy { CallbackManager.Factory.create() }
   private val userRef by lazy { db.collection("user") }
-
   private val gApiClient by lazy {
     activity?.let {
       GoogleApiClient.Builder(it)
@@ -73,7 +78,22 @@ class UserProfileFragment : BaseFragment(), UserProfileView,
     }
   }
   private val channelGoogleSignIn by lazy { BroadcastChannel<GoogleSignInAccount>(1) }
+
   override fun getLayoutId() = R.layout.fragment_user_profile
+
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    var listener: UserSettingsListener? = null
+    if (context is UserSettingsListener) {
+      listener = context
+    } else if (parentFragment is UserSettingsListener) {
+      listener = parentFragment as UserSettingsListener
+    }
+    if (listener == null) {
+      throw IllegalStateException(String.format("INterface not implemented", UserSettingsListener::class.java.simpleName))
+    }
+    userSettingsListener = listener
+  }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
@@ -101,6 +121,15 @@ class UserProfileFragment : BaseFragment(), UserProfileView,
 
     /* Logout*/
     btnUserLogout.setOnClickListener { presenter.logoutUser() }
+
+    /* Toggle offline nearby chat*/
+    toggleStartNearbyChat.isChecked = sharedPrefs.getBoolean(PREF_IS_NEARBY_ENABLED, false)
+    toggleStartNearbyChat.setOnCheckedChangeListener { _, isChecked ->
+      userSettingsListener?.enableNearbyChat(isChecked)
+      sharedPrefs.editPrefs {
+        setBoolean(PREF_IS_NEARBY_ENABLED to isChecked)
+      }
+    }
   }
 
   private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
@@ -208,7 +237,7 @@ class UserProfileFragment : BaseFragment(), UserProfileView,
 
   private val loginComponents by lazy { listOf(btnFacebookLogin, btnGoogleLogin, tvSignInLabel) }
   private val userDetailsComponents by lazy {
-    listOf(imgUserIcon, btnUserLogout, tvEmail, tvName, tvPhoneNumber, tvId, tvLastSignIn)
+    listOf(imgUserIcon, btnUserLogout, tvEmail, tvName, tvPhoneNumber, tvId, tvLastSignIn, toggleStartNearbyChat)
   }
 
   override fun showUserIsLoggedIn(user: FirebaseUser) {

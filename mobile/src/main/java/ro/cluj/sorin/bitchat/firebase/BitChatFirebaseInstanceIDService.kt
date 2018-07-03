@@ -19,7 +19,7 @@ class BitChatFirebaseInstanceIDService : FirebaseInstanceIdService() {
         val refreshedToken = FirebaseInstanceId.getInstance().token
         Timber.i("Refreshed token: $refreshedToken")
 
-        // If you want to send messages to this application instance or
+        // If you want to send chatMessages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
         sendRegistrationToServer(refreshedToken)

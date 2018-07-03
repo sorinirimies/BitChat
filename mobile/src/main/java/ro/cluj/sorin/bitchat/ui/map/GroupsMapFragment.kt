@@ -7,15 +7,13 @@ import android.view.View
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.markodevcic.peko.Peko
 import kotlinx.android.synthetic.main.fragment_map.mapBitchat
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import ro.cluj.sorin.bitchat.R
 import ro.cluj.sorin.bitchat.ui.BaseFragment
+import ro.cluj.sorin.bitchat.utils.hasPermissions
 import ro.cluj.sorin.bitchat.utils.loadMapStyle
 
 /**
@@ -37,23 +35,14 @@ class GroupsMapFragment : BaseFragment(), KodeinAware, GroupsMapView {
     mapView.onResume()
     presenter.attachView(this)
     activity?.let {
-      if (Peko.isRequestInProgress()) {
-        launch(UI) {
-          val result = Peko.resultDeferred?.await()
-        }
-      }
-      launch(UI) {
-        val permissionResultDeferred = Peko.requestPermissionsAsync(it, Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION)
-        val (result) = permissionResultDeferred.await()
-        if (Manifest.permission.ACCESS_FINE_LOCATION in result
-            && Manifest.permission.ACCESS_COARSE_LOCATION in result) {
-          mapBitchat.getMapAsync(onMapReady)
-        }
+      if (hasPermissions(it,
+              Manifest.permission.ACCESS_FINE_LOCATION,
+              Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        mapBitchat.getMapAsync(onMapReady)
       }
     }
   }
-  
+
   override fun onDestroyView() {
     super.onDestroyView()
     presenter.detachView()

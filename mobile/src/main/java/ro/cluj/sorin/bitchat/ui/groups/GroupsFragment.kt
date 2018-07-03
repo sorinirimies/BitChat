@@ -19,6 +19,8 @@ import ro.cluj.sorin.bitchat.model.ChatGroup
 import ro.cluj.sorin.bitchat.ui.BaseFragment
 import ro.cluj.sorin.bitchat.ui.chat.ChatActivity
 import ro.cluj.sorin.bitchat.ui.chat.PARAM_CHAT_GROUP
+import ro.cluj.sorin.bitchat.ui.nearby.NEARBY_SERVICE_ID
+import ro.cluj.sorin.bitchat.ui.nearby.PREF_IS_NEARBY_ENABLED
 import java.util.UUID
 
 /**
@@ -30,6 +32,7 @@ class GroupsFragment : BaseFragment(), KodeinAware, GroupsView {
   private val groupsRef by lazy { db.collection("group") }
   private lateinit var groupsAdapter: GroupsAdapter
   override fun getLayoutId() = R.layout.fragment_groups
+
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     presenter.attachView(this)
@@ -55,7 +58,16 @@ class GroupsFragment : BaseFragment(), KodeinAware, GroupsView {
       })
       adapter = groupsAdapter
     }
-    addGroupsDbChangeListener()
+    enableNearbyChatGroup(sharedPrefs.getBoolean(PREF_IS_NEARBY_ENABLED, false))
+  }
+
+  fun enableNearbyChatGroup(isEnabled: Boolean) {
+    if (isEnabled) {
+      groupsAdapter.clearItems()
+      groupsAdapter.addItem(ChatGroup(NEARBY_SERVICE_ID, getString(R.string.nearby_chat_group)))
+    } else {
+      addGroupsDbChangeListener()
+    }
   }
 
   private fun addGroupsDbChangeListener() {

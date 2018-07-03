@@ -8,6 +8,8 @@ import ro.cluj.sorin.bitchat.utils.toBitChatUser
  * Created by sorin on 12.05.18.
  */
 class UserProfilePresenter : BasePresenter<UserProfileView>() {
+
+  /*User login management*/
   fun showUserLoginFailed(msg: String?) {
     view.showUserLoggedInFailed(msg)
   }

@@ -16,7 +16,7 @@ import ro.cluj.sorin.bitchat.ui.user.UserProfilePresenter
 val uiPresentersModule = Kodein.Module {
   bind<GroupsMapPresenter>() with provider { GroupsMapPresenter() }
   bind<UserProfilePresenter>() with provider { UserProfilePresenter() }
-  bind<ChatPresenter>() with provider { ChatPresenter() }
+  bind<ChatPresenter>() with provider { ChatPresenter(instance()) }
   bind<GroupsPresenter>() with provider { GroupsPresenter(instance()) }
   bind<MainPresenter>() with provider { MainPresenter() }
 }

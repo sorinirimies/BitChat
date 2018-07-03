@@ -21,7 +21,7 @@ import kotlin.concurrent.fixedRateTimer
 /**
  * Created by sorin on 12.05.18.
  */
-class BitChatManager(private val application: Application, private val accountManager: FirebaseAuth) : MqttManager {
+class BitChatMqttManager(private val application: Application, private val accountManager: FirebaseAuth) : MqttManager {
   private var maxNumberOfRetries = 4
   private var retryInterval = 4000L
   private var topics: Array<String> = arrayOf()
@@ -39,15 +39,15 @@ class BitChatManager(private val application: Application, private val accountMa
       Timber.w("connect was called although the mqttClient is already connected")
       return
     }
-    this@BitChatManager.topics = topics
-    this@BitChatManager.qos = qos
+    this@BitChatMqttManager.topics = topics
+    this@BitChatMqttManager.qos = qos
     val clientId = Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID)
     mqttClient = MqttAsyncClient(serverURI, clientId, MemoryPersistence())
     mqttClient?.setCallback(object : MqttCallback {
       @Throws(Exception::class)
       override fun messageArrived(topic: String, message: MqttMessage) {
         val msg = message.payload.toString(Charsets.UTF_8)
-        Timber.w("Message arrived: $msg")
+        Timber.w("ChatMessage arrived: $msg")
         launch { mqttMessageChannel.send(topic to message) }
       }
 

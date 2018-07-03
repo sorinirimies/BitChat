@@ -12,25 +12,39 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Fun Chat"/>
+
+    <TextView
+        android:id="@+id/tvConnectionStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+        android:textColor="@color/colorDisconnected"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/disconnected"
+        app:layout_constraintTop_toBottomOf="@+id/tvGroupNameTitle"
+        tools:text="Connected"/>
 
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvConversation"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="32dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="32dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@+id/edtChatMsg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvGroupNameTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvConnectionStatus"
         app:layout_constraintVertical_bias="0.703">
     </android.support.v7.widget.RecyclerView>
 
@@ -40,8 +54,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:focusable="true"
         android:gravity="center"
         android:src="@drawable/ic_send_message"
@@ -57,9 +71,9 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/grid6"
         android:layout_gravity="center"
-        android:layout_marginBottom="12dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="12dp"
         android:layout_weight="1"
         android:background="@android:color/transparent"
         android:hint="@string/say_something"

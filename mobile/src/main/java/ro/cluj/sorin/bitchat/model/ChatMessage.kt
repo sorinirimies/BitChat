@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Message(
+data class ChatMessage(
   val messageId: String,
   val groupId: String,
   val userId: String,

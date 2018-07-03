@@ -17,6 +17,7 @@
     <string name="send_message">Send</string>
     <string name="logout_user">Logout</string>
     <string name="sign_in_user">Sign in</string>
+    <string name="error_missing_permissions">Cannot start without required permissions</string>
     <string name="new_group_name">Name your new group</string>
     <string name="cancel">Cancel</string>
     <string name="say_something">Say something ...</string>
@@ -25,4 +26,8 @@
     <string name="group_created_confirmation">was added successfully!</string>
     <string name="real_time_chat_label">Real Time Chat</string>
     <string name="groups_you_are_member_in">Groups you are member in</string>
+    <string name="enable_nearby_chat">Enable nearby chat</string>
+    <string name="nearby_chat_group">Nearby Offline Chat</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="connected">Connected</string>
 </resources>

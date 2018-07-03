@@ -20,6 +20,8 @@
     <color name="colorDarkGrey">#3d414c</color>
     <color name="colorWhite">#FFFF</color>
     <color name="colorSettings">#3CA692</color>
+    <color name="colorConnected">#28CC65</color>
+    <color name="colorDisconnected">#F01A30</color>
     <color name="colorCompassFill">#C75C5C</color>
     <color name="colorUserFill">#4F5D73</color>
     <color name="colorGoogleSignin">#4285f4</color>

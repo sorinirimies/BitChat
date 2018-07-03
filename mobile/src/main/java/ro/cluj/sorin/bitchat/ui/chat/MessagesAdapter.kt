@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.listitem_incoming_message.view.txtOtherUse
 import kotlinx.android.synthetic.main.listitem_my_message.view.txtMyMessage
 import kotlinx.android.synthetic.main.listitem_my_message.view.txtMyMessageTime
 import ro.cluj.sorin.bitchat.R
-import ro.cluj.sorin.bitchat.model.Message
+import ro.cluj.sorin.bitchat.model.ChatMessage
 import ro.cluj.sorin.bitchat.utils.fromMillisToTimeString
 
 private const val VIEW_TYPE_MY_MESSAGE = 1
@@ -21,20 +21,20 @@ private const val VIEW_TYPE_OTHER_MESSAGE = 2
  * Created by sorin on 12.05.18.
  */
 class ConversationAdapter : RecyclerView.Adapter<MessageViewHolder>() {
-  private val messages: ArrayList<Message> = ArrayList()
+  private val chatMessages: ArrayList<ChatMessage> = ArrayList()
 
-  fun addItem(message: Message) {
-    if (messages.map { it.messageId }.contains(message.messageId)) return
-    messages.add(message)
-    notifyItemInserted(messages.indexOf(message))
+  fun addItem(chatMessage: ChatMessage) {
+    if (chatMessages.map { it.messageId }.contains(chatMessage.messageId)) return
+    chatMessages.add(chatMessage)
+    notifyItemInserted(chatMessages.indexOf(chatMessage))
   }
 
   override fun getItemCount(): Int {
-    return messages.size
+    return chatMessages.size
   }
 
   override fun getItemViewType(position: Int): Int {
-    val message = messages[position]
+    val message = chatMessages[position]
     return if (message.isSending) {
       VIEW_TYPE_MY_MESSAGE
     } else {
@@ -50,15 +50,15 @@ class ConversationAdapter : RecyclerView.Adapter<MessageViewHolder>() {
     }
   }
 
-  override fun onBindViewHolder(holder: MessageViewHolder, position: Int) = holder.bind(messages[position])
+  override fun onBindViewHolder(holder: MessageViewHolder, position: Int) = holder.bind(chatMessages[position])
 
   inner class MyMessageViewHolder(view: View) : MessageViewHolder(view) {
     private var messageText: TextView = view.txtMyMessage
     private var timeText: TextView = view.txtMyMessageTime
 
-    override fun bind(message: Message) {
-      messageText.text = message.message
-      timeText.text = message.time.fromMillisToTimeString()
+    override fun bind(chatMessage: ChatMessage) {
+      messageText.text = chatMessage.message
+      timeText.text = chatMessage.time.fromMillisToTimeString()
     }
   }
 
@@ -67,14 +67,14 @@ class ConversationAdapter : RecyclerView.Adapter<MessageViewHolder>() {
     private var userText: TextView = view.txtOtherUser
     private var timeText: TextView = view.txtOtherMessageTime
 
-    override fun bind(message: Message) {
-      messageText.text = message.message
-      userText.text = message.userName
-      timeText.text = message.time.fromMillisToTimeString()
+    override fun bind(chatMessage: ChatMessage) {
+      messageText.text = chatMessage.message
+      userText.text = chatMessage.userName
+      timeText.text = chatMessage.time.fromMillisToTimeString()
     }
   }
 }
 
 open class MessageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-  open fun bind(message: Message) {}
+  open fun bind(chatMessage: ChatMessage) {}
 }

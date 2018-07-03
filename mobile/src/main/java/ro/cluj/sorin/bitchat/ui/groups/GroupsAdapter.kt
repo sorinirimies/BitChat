@@ -4,12 +4,14 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.greenspand.kotlin_ext.gone
 import kotlinx.android.synthetic.main.listitem_group.view.contGroupItem
 import kotlinx.android.synthetic.main.listitem_group.view.deleteGroup
 import kotlinx.android.synthetic.main.listitem_group.view.editGroup
 import kotlinx.android.synthetic.main.listitem_group.view.tvGroupName
 import ro.cluj.sorin.bitchat.R
 import ro.cluj.sorin.bitchat.model.ChatGroup
+import ro.cluj.sorin.bitchat.ui.nearby.NEARBY_SERVICE_ID
 
 /**
  * Created by sorin on 12.05.18.
@@ -32,6 +34,11 @@ class GroupsAdapter(private val groupActionsListener: GroupActionsListener) :
       itemView.apply {
         tvGroupName.text = group.name
         contGroupItem.setOnClickListener { groupActionsListener.selectGroup(group) }
+        if (group.id == NEARBY_SERVICE_ID) {
+          deleteGroup.gone()
+          editGroup.gone()
+          return@apply
+        }
         deleteGroup.setOnClickListener { groupActionsListener.deleteGroup(group) }
         editGroup.setOnClickListener { groupActionsListener.editGroup(group) }
       }

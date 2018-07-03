@@ -5,7 +5,8 @@ apply plugin: 'kotlin-android-extensions'
 ext {
     supportLibVersion = '27.1.1'
     coroutinesVersion = '0.23.3'
-    playServicesVersion = '15.0.0'
+    playServicesVersion = '15.0.1'
+    firebaseVersion = '15.0.0'
     lifecycleVersion = "2.0.0-alpha1"
     ktxVersion = "1.0.0-alpha1"
     roomVersion = "1.0.0"
@@ -62,13 +63,13 @@ dependencies {
     implementation "com.android.support:design:$supportLibVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 
-    /*Firebase*/
+    /*Firebase services*/
     implementation 'com.google.firebase:firebase-core:15.0.2'
     implementation 'com.google.firebase:firebase-messaging:15.0.2'
-    implementation "com.google.firebase:firebase-firestore:$playServicesVersion"
-    implementation "com.google.firebase:firebase-perf:$playServicesVersion"
-    implementation "com.google.firebase:firebase-auth:$playServicesVersion"
-    implementation "com.google.firebase:firebase-storage:$playServicesVersion"
+    implementation "com.google.firebase:firebase-firestore:$firebaseVersion"
+    implementation "com.google.firebase:firebase-perf:$firebaseVersion"
+    implementation "com.google.firebase:firebase-auth:$firebaseVersion"
+    implementation "com.google.firebase:firebase-storage:$firebaseVersion"
 
     /*Play services*/
     implementation "com.google.android.gms:play-services-maps:$playServicesVersion"
@@ -76,13 +77,11 @@ dependencies {
     implementation "com.google.android.gms:play-services-auth:$playServicesVersion"
     implementation "com.google.android.gms:play-services-nearby:$playServicesVersion"
 
-    /*Android Jetpack*/
+    /*Android JetPack*/
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
 
     /*Facebook*/
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
-
-    implementation 'com.markodevcic.peko:peko:0.31'
 
     /*My utils*/
     implementation "com.greenspand:kotlin-ext:$kotlinExtVersion"
@@ -104,7 +103,6 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'jp.wasabeef:picasso-transformations:2.1.2'
     implementation 'com.makeramen:roundedimageview:2.3.0'
-
 
     /*JSON Parsing*/
     implementation 'com.squareup.moshi:moshi-kotlin:1.5.0'
