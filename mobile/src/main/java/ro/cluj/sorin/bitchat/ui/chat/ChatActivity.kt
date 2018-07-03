@@ -6,12 +6,18 @@ import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.greenspand.kotlin_ext.animateGone
+import com.greenspand.kotlin_ext.animateVisible
+import com.greenspand.kotlin_ext.snack
 import com.greenspand.kotlin_ext.visible
 import kotlinx.android.synthetic.main.activity_chat.btnSend
+import kotlinx.android.synthetic.main.activity_chat.contChatActivity
 import kotlinx.android.synthetic.main.activity_chat.edtChatMsg
+import kotlinx.android.synthetic.main.activity_chat.progressLoadChat
 import kotlinx.android.synthetic.main.activity_chat.rvConversation
 import kotlinx.android.synthetic.main.activity_chat.tvConnectionStatus
 import kotlinx.android.synthetic.main.activity_chat.tvGroupNameTitle
+import kotlinx.android.synthetic.main.activity_chat.tvLookingForFriendsLabel
 import kotlinx.coroutines.experimental.channels.BroadcastChannel
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
@@ -43,6 +49,7 @@ class ChatActivity : BaseActivity(), KodeinAware, ChatView {
   private var user: User? = null
   private var group: ChatGroup? = null
   private var isNearbyChatEnabled = false
+
   @SuppressLint("SetTextI18n")
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -91,6 +98,8 @@ class ChatActivity : BaseActivity(), KodeinAware, ChatView {
       isNearbyChatEnabled = true
       tvConnectionStatus.visible()
       presenter.setState(State.SEARCHING)
+      progressLoadChat.animateVisible()
+      tvLookingForFriendsLabel.animateVisible()
     }
   }
 
@@ -139,14 +148,7 @@ class ChatActivity : BaseActivity(), KodeinAware, ChatView {
   }
 
   override fun showUserIsLoggedOut() {
-
-  }
-
-  override fun showNearbyChatDisconnected() {
-    tvConnectionStatus.apply {
-      text = getString(R.string.disconnected)
-      setTextColor(getColor(R.color.colorDisconnected))
-    }
+    snack(contChatActivity, getString(R.string.user_is_logggedout))
   }
 
   override fun showNearbyChatConnected() {
@@ -154,6 +156,18 @@ class ChatActivity : BaseActivity(), KodeinAware, ChatView {
       text = getString(R.string.connected)
       setTextColor(getColor(R.color.colorConnected))
     }
+    progressLoadChat.animateGone()
+    tvLookingForFriendsLabel.animateGone()
+  }
+
+  override fun showNearbyChatDisconnected() {
+    tvConnectionStatus.apply {
+      text = getString(R.string.disconnected)
+      setTextColor(getColor(R.color.colorDisconnected))
+      snack(contChatActivity, getString(R.string.disconnected))
+    }
+    progressLoadChat.animateVisible()
+    tvLookingForFriendsLabel.animateVisible()
   }
 
   override fun showAddedMessage(chatMessage: ChatMessage) {

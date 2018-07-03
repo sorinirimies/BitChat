@@ -6,11 +6,11 @@
     <dimen name="menu_height">90dp</dimen>
 
     <!--Universal grid system-->
-    <dimen name="grid0.5">4dp</dimen>
+    <dimen name="grid0_5">4dp</dimen>
     <dimen name="grid1">8dp</dimen>
     <dimen name="grid2">16dp</dimen>
     <dimen name="grid3">24dp</dimen>
-    <dimen name="grid3.5">28dp</dimen>
+    <dimen name="grid3_5">28dp</dimen>
     <dimen name="grid4">32dp</dimen>
     <dimen name="grid5">40dp</dimen>
     <dimen name="grid6">48dp</dimen>

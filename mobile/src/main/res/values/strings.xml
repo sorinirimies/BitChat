@@ -15,7 +15,9 @@
     <string name="edit_group">Edit</string>
     <string name="delete_group">Delete</string>
     <string name="send_message">Send</string>
+    <string name="looking_for_friends">Looking for your friends...</string>
     <string name="logout_user">Logout</string>
+    <string name="user_is_logggedout">User is logged out</string>
     <string name="sign_in_user">Sign in</string>
     <string name="error_missing_permissions">Cannot start without required permissions</string>
     <string name="new_group_name">Name your new group</string>

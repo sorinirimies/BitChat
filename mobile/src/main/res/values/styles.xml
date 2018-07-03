@@ -5,12 +5,13 @@
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/secondaryColor</item>
     </style>
+
     <style name="BitChat" parent="AppTheme"/>
 
     <style name="BitChat.Facebook">
         <item name="android:layout_width">@dimen/grid24</item>
         <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:paddingLeft">@dimen/grid0.5</item>
+        <item name="android:paddingLeft">@dimen/grid0_5</item>
         <item name="android:textSize">@dimen/txt_size_m</item>
         <item name="android:scaleType">fitStart</item>
         <item name="android:layout_height">@dimen/grid6</item>
@@ -21,7 +22,7 @@
     <style name="BitChat.Google">
         <item name="android:layout_width">@dimen/grid24</item>
         <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:paddingLeft">@dimen/grid0.5</item>
+        <item name="android:paddingLeft">@dimen/grid0_5</item>
         <item name="android:textSize">@dimen/txt_size_m</item>
         <item name="android:scaleType">fitStart</item>
         <item name="android:layout_height">@dimen/grid6</item>
