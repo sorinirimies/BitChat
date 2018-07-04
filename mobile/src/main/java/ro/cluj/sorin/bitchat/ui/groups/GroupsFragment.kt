@@ -6,6 +6,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.EditText
 import com.greenspand.kotlin_ext.alertDialog
+import com.greenspand.kotlin_ext.animateGone
+import com.greenspand.kotlin_ext.animateVisible
 import com.greenspand.kotlin_ext.init
 import com.greenspand.kotlin_ext.snack
 import kotlinx.android.synthetic.main.fragment_groups.contGroupsFragment
@@ -65,8 +67,10 @@ class GroupsFragment : BaseFragment(), KodeinAware, GroupsView {
     if (isEnabled) {
       groupsAdapter.clearItems()
       groupsAdapter.addItem(ChatGroup(NEARBY_SERVICE_ID, getString(R.string.nearby_chat_group)))
+      fabCreateGroup.animateGone()
     } else {
       addGroupsDbChangeListener()
+      fabCreateGroup.animateVisible()
     }
   }
 

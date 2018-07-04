@@ -90,7 +90,7 @@ class GroupsMapFragment : BaseFragment(), KodeinAware, GroupsMapView {
   private fun getLocationAndAnimateMarker(location: Location) {
     val latLng = LatLng(location.latitude, location.longitude)
     googleMap?.apply {
-      createAndAddMarker(latLng, R.drawable.ic_map_marker)
+      createAndAddMarker(latLng, R.mipmap.ic_map_marker)
       moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM))
     }
   }

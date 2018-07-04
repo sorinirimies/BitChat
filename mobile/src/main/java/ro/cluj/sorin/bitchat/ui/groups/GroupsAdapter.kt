@@ -34,11 +34,6 @@ class GroupsAdapter(private val groupActionsListener: GroupActionsListener) :
       itemView.apply {
         tvGroupName.text = group.name
         contGroupItem.setOnClickListener { groupActionsListener.selectGroup(group) }
-        if (group.id == NEARBY_SERVICE_ID) {
-          deleteGroup.gone()
-          editGroup.gone()
-          return@apply
-        }
         deleteGroup.setOnClickListener { groupActionsListener.deleteGroup(group) }
         editGroup.setOnClickListener { groupActionsListener.editGroup(group) }
       }
