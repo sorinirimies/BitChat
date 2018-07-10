@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.activity_chat.rvConversation
 import kotlinx.android.synthetic.main.activity_chat.tvConnectionStatus
 import kotlinx.android.synthetic.main.activity_chat.tvGroupNameTitle
 import kotlinx.android.synthetic.main.activity_chat.tvLookingForFriendsLabel
+import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.BroadcastChannel
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
@@ -62,10 +63,9 @@ class ChatActivity : BaseActivity(), KodeinAware, ChatView {
       conversationAdapter = ConversationAdapter()
       adapter = conversationAdapter
     }
-    launch {
+    launch(UI) {
       channelFirebaseUser.openSubscription().consumeEach {
         user = it.toBitChatUser()
-        Timber.w("ENABLE CHAT")
       }
     }
     firebaseAuth.addAuthStateListener(authStateListener)
@@ -142,7 +142,7 @@ class ChatActivity : BaseActivity(), KodeinAware, ChatView {
   }
 
   override fun showUserIsLoggedIn(user: FirebaseUser) {
-    launch {
+    launch(UI) {
       channelFirebaseUser.send(user)
     }
   }
