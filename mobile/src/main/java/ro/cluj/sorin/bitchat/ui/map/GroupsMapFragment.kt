@@ -13,6 +13,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.fragment_map.mapBitchat
@@ -27,7 +28,6 @@ import ro.cluj.sorin.bitchat.R
 import ro.cluj.sorin.bitchat.model.User
 import ro.cluj.sorin.bitchat.model.UserLocation
 import ro.cluj.sorin.bitchat.ui.BaseFragment
-import ro.cluj.sorin.bitchat.utils.createAndAddMarker
 import ro.cluj.sorin.bitchat.utils.createLocationRequest
 import ro.cluj.sorin.bitchat.utils.hasPermissions
 import ro.cluj.sorin.bitchat.utils.loadMapStyle
@@ -117,7 +117,7 @@ class GroupsMapFragment : BaseFragment(), KodeinAware, GroupsMapView {
         if (user != null && user?.id != userId) {
           val lat = data["lat"].toString().toDouble()
           val lng = data["lng"].toString().toDouble()
-          googleMap?.createAndAddMarker(LatLng(lat, lng), R.mipmap.ic_map_marker)
+          googleMap?.addMarker(MarkerOptions().title(user?.name).position(LatLng(lat, lng)))
         }
       }
     }

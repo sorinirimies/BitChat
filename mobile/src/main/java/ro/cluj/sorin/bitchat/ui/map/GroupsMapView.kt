@@ -8,7 +8,9 @@ import ro.cluj.sorin.bitchat.MvpBase
  * Created by sorin on 12.05.18.
  */
 interface GroupsMapView : MvpBase.View {
+
   fun showMap(googleMap: GoogleMap)
+
   fun showUserIsLoggedIn(user: FirebaseUser)
 
   fun showUserIsLoggedOut()

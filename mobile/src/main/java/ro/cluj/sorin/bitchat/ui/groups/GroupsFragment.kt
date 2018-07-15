@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.EditText
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.greenspand.kotlin_ext.alertDialog
 import com.greenspand.kotlin_ext.animateGone
 import com.greenspand.kotlin_ext.animateVisible
@@ -29,6 +31,7 @@ import java.util.UUID
  * Created by sorin on 12.05.18.
  */
 class GroupsFragment : BaseFragment(), KodeinAware, GroupsView {
+
   override val kodein by closestKodein()
   private val presenter: GroupsPresenter by instance()
   private val groupsRef by lazy { db.collection("group") }
@@ -60,7 +63,7 @@ class GroupsFragment : BaseFragment(), KodeinAware, GroupsView {
       })
       adapter = groupsAdapter
     }
-    enableNearbyChatGroup(sharedPrefs.getBoolean(PREF_IS_NEARBY_ENABLED, false))
+    firebaseAuth.addAuthStateListener(authStateListener)
   }
 
   fun enableNearbyChatGroup(isEnabled: Boolean) {
@@ -84,9 +87,26 @@ class GroupsFragment : BaseFragment(), KodeinAware, GroupsView {
     }
   }
 
+  override fun showUserIsLoggedIn(user: FirebaseUser) {
+    enableNearbyChatGroup(sharedPrefs.getBoolean(PREF_IS_NEARBY_ENABLED, false))
+  }
+
+  override fun showUserIsLoggedOut() {
+    groupsAdapter.clearItems()
+  }
+
   override fun onDestroyView() {
     super.onDestroyView()
     presenter.detachView()
+  }
+
+  private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+    val user = firebaseAuth.currentUser
+    if (user != null) {
+      presenter.userIsLoggedIn(user)
+    } else {
+      presenter.userIsLoggedOut()
+    }
   }
 
   private fun showCreateGroupDialog() = context?.let {

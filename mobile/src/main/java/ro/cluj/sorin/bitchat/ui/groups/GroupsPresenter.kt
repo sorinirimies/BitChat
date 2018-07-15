@@ -1,5 +1,6 @@
 package ro.cluj.sorin.bitchat.ui.groups
 
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import ro.cluj.sorin.bitchat.BasePresenter
 import ro.cluj.sorin.bitchat.model.ChatGroup
@@ -25,5 +26,13 @@ class GroupsPresenter(private val db: FirebaseFirestore) : BasePresenter<GroupsV
     db.collection("group").document(group.id).delete().addOnSuccessListener {
       view.showChatGroupDeleted(group)
     }
+  }
+
+  fun userIsLoggedIn(user: FirebaseUser) {
+    view.showUserIsLoggedIn(user)
+  }
+
+  fun userIsLoggedOut() {
+    view.showUserIsLoggedOut()
   }
 }
