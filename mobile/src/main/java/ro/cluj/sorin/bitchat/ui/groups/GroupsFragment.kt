@@ -15,7 +15,6 @@ import com.greenspand.kotlin_ext.snack
 import kotlinx.android.synthetic.main.fragment_groups.contGroupsFragment
 import kotlinx.android.synthetic.main.fragment_groups.fabCreateGroup
 import kotlinx.android.synthetic.main.fragment_groups.rvGroups
-import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import ro.cluj.sorin.bitchat.R
@@ -30,6 +29,8 @@ import java.util.UUID
 /**
  * Created by sorin on 12.05.18.
  */
+const val DEFAULT_GROUP_ID = "ro.cluj.sorin.bitchat.123ertg"
+
 class GroupsFragment : BaseFragment(), GroupsView {
 
   override val kodein by closestKodein()
@@ -72,8 +73,13 @@ class GroupsFragment : BaseFragment(), GroupsView {
       groupsAdapter.addItem(ChatGroup(NEARBY_SERVICE_ID, getString(R.string.nearby_chat_group)))
       fabCreateGroup.animateGone()
     } else {
-      addGroupsDbChangeListener()
-      fabCreateGroup.animateVisible()
+      //TODO remove this as it is used only for pre-alpha version
+      groupsAdapter.clearItems()
+      groupsAdapter.addItem(ChatGroup(DEFAULT_GROUP_ID, getString(R.string.nearby_chat_group)))
+      fabCreateGroup.animateGone()
+      //TODO re-enable for production app version
+      //      addGroupsDbChangeListener()
+      //      fabCreateGroup.animateVisible()
     }
   }
 

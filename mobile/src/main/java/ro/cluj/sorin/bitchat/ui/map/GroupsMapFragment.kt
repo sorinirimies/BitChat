@@ -2,6 +2,7 @@ package ro.cluj.sorin.bitchat.ui.map
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
@@ -19,21 +20,25 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.fragment_map.mapBitchat
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.channels.SendChannel
-import kotlinx.coroutines.experimental.channels.actor
-import kotlinx.coroutines.experimental.channels.map
+import kotlinx.coroutines.experimental.channels.BroadcastChannel
+import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import ro.cluj.sorin.bitchat.R
+import ro.cluj.sorin.bitchat.model.ChatGroup
 import ro.cluj.sorin.bitchat.model.User
 import ro.cluj.sorin.bitchat.model.UserLocation
 import ro.cluj.sorin.bitchat.ui.BaseFragment
+import ro.cluj.sorin.bitchat.ui.chat.ChatActivity
+import ro.cluj.sorin.bitchat.ui.chat.PARAM_CHAT_GROUP
+import ro.cluj.sorin.bitchat.ui.groups.DEFAULT_GROUP_ID
 import ro.cluj.sorin.bitchat.utils.createLocationRequest
 import ro.cluj.sorin.bitchat.utils.hasPermissions
 import ro.cluj.sorin.bitchat.utils.loadMapStyle
 import ro.cluj.sorin.bitchat.utils.toBitChatUser
+import timber.log.Timber
 
 /**
  * Created by sorin on 12.05.18.
@@ -44,7 +49,7 @@ private const val LOCATION_UPDATE_INTERVAL = 10L * 1000L
 class GroupsMapFragment : BaseFragment(), GroupsMapView {
   override fun showUserIsLoggedIn(user: FirebaseUser) {
     launch(UI) {
-      channelUser.send(user)
+      channelFirebaseUser.send(user)
     }
   }
 
@@ -61,7 +66,8 @@ class GroupsMapFragment : BaseFragment(), GroupsMapView {
   private var user: User? = null
   private var googleMap: GoogleMap? = null
   private lateinit var mapView: MapView
-
+  private val channelLocation by lazy { BroadcastChannel<Location>(10000000) }
+  private val channelFirebaseUser by lazy { BroadcastChannel<FirebaseUser>(1) }
 
   private val locationRef by lazy { db.collection("location") }
 
@@ -79,18 +85,27 @@ class GroupsMapFragment : BaseFragment(), GroupsMapView {
         mapBitchat.getMapAsync { presenter.mapIsReady(it) }
       }
     }
+    startUserChannel()
   }
 
-private val channelUser : SendChannel<FirebaseUser> = actor (UI){
-  channel.map { firebaseUser ->
-    user = firebaseUser.toBitChatUser()
-    registerForUsersLocationUpdates()
+  private fun startUserChannel() {
+    launch(UI) {
+      channelFirebaseUser.openSubscription().consumeEach {
+        user = it.toBitChatUser()
+        startLocationChannel()
+        registerForUsersLocationUpdates()
+      }
+    }
   }
-}
-    private val channelLocation: SendChannel<Location> = actor(UI) {
-    channel.map { location ->
-      user?.let { user ->
-        locationRef.document(user.id).set(UserLocation(user.id, location.latitude, location.longitude))
+
+  private fun startLocationChannel() {
+    launch(UI) {
+      channelLocation.openSubscription().consumeEach { location ->
+        user?.let { user ->
+          locationRef.document(user.id).set(UserLocation(user.id, location.latitude, location.longitude))
+        }
+        //FIXME find a way to initially zoom camera in
+        //        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location.toLatLng(), DEFAULT_ZOOM))
       }
     }
   }
@@ -130,15 +145,25 @@ private val channelUser : SendChannel<FirebaseUser> = actor (UI){
     googleMap.apply {
       isMyLocationEnabled = true
       context?.let { loadMapStyle(it, R.raw.google_map_style) }
+      setOnInfoWindowClickListener {
+        startChatActivity()
+      }
       setOnMarkerClickListener {
+        startChatActivity()
         false
       }
     }
   }
 
+  private fun startChatActivity() = startActivity(
+      Intent(activity, ChatActivity::class.java).apply {
+        putExtra(PARAM_CHAT_GROUP, ChatGroup(DEFAULT_GROUP_ID,
+            getString(R.string.group_cryptonarii)))
+      })
+
   private val locationCallback = object : LocationCallback() {
     override fun onLocationResult(locationResult: LocationResult) {
-      launch{
+      launch(UI) {
         channelLocation.send(locationResult.lastLocation)
       }
     }
@@ -185,7 +210,7 @@ private val channelUser : SendChannel<FirebaseUser> = actor (UI){
   override fun onDestroyView() {
     super.onDestroyView()
     firebaseAuth.removeAuthStateListener(authStateListener)
-    channelUser.close()
+    channelFirebaseUser.close()
     channelLocation.close()
     presenter.detachView()
   }

@@ -22,7 +22,6 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.BroadcastChannel
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
-import org.kodein.di.KodeinAware
 import org.kodein.di.generic.instance
 import ro.cluj.sorin.bitchat.R
 import ro.cluj.sorin.bitchat.model.ChatGroup
@@ -30,9 +29,9 @@ import ro.cluj.sorin.bitchat.model.ChatMessage
 import ro.cluj.sorin.bitchat.model.State
 import ro.cluj.sorin.bitchat.model.User
 import ro.cluj.sorin.bitchat.ui.BaseActivity
+import ro.cluj.sorin.bitchat.ui.groups.DEFAULT_GROUP_ID
 import ro.cluj.sorin.bitchat.ui.nearby.NEARBY_SERVICE_ID
 import ro.cluj.sorin.bitchat.utils.toBitChatUser
-import timber.log.Timber
 import java.util.Calendar
 import java.util.UUID
 
@@ -111,14 +110,16 @@ class ChatActivity : BaseActivity(), ChatView {
         val groupId = data["groupId"].toString()
         if (groupId == group?.id) {
           val isSending = data["userId"].toString() == user?.id
-          val msg = ChatMessage(data["messageId"].toString(),
+          val msg: ChatMessage? = ChatMessage(data["messageId"].toString(),
               data["groupId"].toString(),
               data["userId"].toString(),
               data["userName"].toString(),
               isSending,
               data["message"].toString(),
               data["time"].toString().toLong())
-          presenter.addMessage(msg)
+          msg?.let {
+            presenter.addMessage(msg)
+          }
         }
       }
     }

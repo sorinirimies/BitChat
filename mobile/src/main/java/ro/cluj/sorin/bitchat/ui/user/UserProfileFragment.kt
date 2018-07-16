@@ -90,7 +90,7 @@ class UserProfileFragment : BaseFragment(), UserProfileView,
       listener = parentFragment as UserSettingsListener
     }
     if (listener == null) {
-      throw IllegalStateException(String.format("INterface not implemented", UserSettingsListener::class.java.simpleName))
+      throw IllegalStateException(String.format("Interface not implemented", UserSettingsListener::class.java.simpleName))
     }
     userSettingsListener = listener
   }
