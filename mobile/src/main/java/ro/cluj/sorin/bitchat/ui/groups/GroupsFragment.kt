@@ -30,7 +30,7 @@ import java.util.UUID
 /**
  * Created by sorin on 12.05.18.
  */
-class GroupsFragment : BaseFragment(), KodeinAware, GroupsView {
+class GroupsFragment : BaseFragment(), GroupsView {
 
   override val kodein by closestKodein()
   private val presenter: GroupsPresenter by instance()

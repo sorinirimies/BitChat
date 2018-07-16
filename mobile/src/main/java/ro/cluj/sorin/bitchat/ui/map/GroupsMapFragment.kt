@@ -13,6 +13,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -40,7 +41,7 @@ import ro.cluj.sorin.bitchat.utils.toBitChatUser
 private const val DEFAULT_ZOOM = 12f
 private const val LOCATION_UPDATE_INTERVAL = 10L * 1000L
 
-class GroupsMapFragment : BaseFragment(), KodeinAware, GroupsMapView {
+class GroupsMapFragment : BaseFragment(), GroupsMapView {
   override fun showUserIsLoggedIn(user: FirebaseUser) {
     launch(UI) {
       channelUser.send(user)
@@ -66,14 +67,11 @@ class GroupsMapFragment : BaseFragment(), KodeinAware, GroupsMapView {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-
     mapView = view.findViewById(R.id.mapBitchat)
     mapView.onCreate(savedInstanceState)
     mapView.onResume()
     presenter.attachView(this)
-
     firebaseAuth.addAuthStateListener(authStateListener)
-
     activity?.let {
       if (hasPermissions(it,
               Manifest.permission.ACCESS_FINE_LOCATION,
@@ -107,7 +105,10 @@ private val channelUser : SendChannel<FirebaseUser> = actor (UI){
         if (user != null && user?.id != userId) {
           val lat = data["lat"].toString().toDouble()
           val lng = data["lng"].toString().toDouble()
-          googleMap?.addMarker(MarkerOptions().title(user?.name).position(LatLng(lat, lng)))
+          googleMap?.addMarker(MarkerOptions()
+              .position(LatLng(lat, lng))
+              .title(user?.name))
+              ?.showInfoWindow()
         }
       }
     }
@@ -129,6 +130,9 @@ private val channelUser : SendChannel<FirebaseUser> = actor (UI){
     googleMap.apply {
       isMyLocationEnabled = true
       context?.let { loadMapStyle(it, R.raw.google_map_style) }
+      setOnMarkerClickListener {
+        false
+      }
     }
   }
 

@@ -41,7 +41,7 @@ internal const val PARAM_CHAT_GROUP = " ro.cluj.sorin.bitchat.CHAT_GROUP"
 /**
  * Created by sorin on 12.05.18.
  */
-class ChatActivity : BaseActivity(), KodeinAware, ChatView {
+class ChatActivity : BaseActivity(), ChatView {
 
   private val presenter: ChatPresenter by instance()
   private val channelFirebaseUser by lazy { BroadcastChannel<FirebaseUser>(1) }
