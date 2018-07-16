@@ -17,8 +17,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.fragment_map.mapBitchat
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.channels.BroadcastChannel
-import kotlinx.coroutines.experimental.channels.consumeEach
+import kotlinx.coroutines.experimental.channels.SendChannel
+import kotlinx.coroutines.experimental.channels.actor
+import kotlinx.coroutines.experimental.channels.map
 import kotlinx.coroutines.experimental.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -42,7 +43,7 @@ private const val LOCATION_UPDATE_INTERVAL = 10L * 1000L
 class GroupsMapFragment : BaseFragment(), KodeinAware, GroupsMapView {
   override fun showUserIsLoggedIn(user: FirebaseUser) {
     launch(UI) {
-      channelFirebaseUser.send(user)
+      channelUser.send(user)
     }
   }
 
@@ -59,8 +60,7 @@ class GroupsMapFragment : BaseFragment(), KodeinAware, GroupsMapView {
   private var user: User? = null
   private var googleMap: GoogleMap? = null
   private lateinit var mapView: MapView
-  private val channelLocation by lazy { BroadcastChannel<Location>(10000000) }
-  private val channelFirebaseUser by lazy { BroadcastChannel<FirebaseUser>(1) }
+
 
   private val locationRef by lazy { db.collection("location") }
 
@@ -81,28 +81,18 @@ class GroupsMapFragment : BaseFragment(), KodeinAware, GroupsMapView {
         mapBitchat.getMapAsync { presenter.mapIsReady(it) }
       }
     }
-
-    startUserChannel()
   }
 
-  private fun startUserChannel() {
-    launch(UI) {
-      channelFirebaseUser.openSubscription().consumeEach {
-        user = it.toBitChatUser()
-        startLocationChannel()
-        registerForUsersLocationUpdates()
-      }
-    }
+private val channelUser : SendChannel<FirebaseUser> = actor (UI){
+  channel.map { firebaseUser ->
+    user = firebaseUser.toBitChatUser()
+    registerForUsersLocationUpdates()
   }
-
-  private fun startLocationChannel() {
-    launch(UI) {
-      channelLocation.openSubscription().consumeEach { location ->
-        user?.let { user ->
-          locationRef.document(user.id).set(UserLocation(user.id, location.latitude, location.longitude))
-        }
-        //FIXME find a way to initially zoom camera in
-        //        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location.toLatLng(), DEFAULT_ZOOM))
+}
+    private val channelLocation: SendChannel<Location> = actor(UI) {
+    channel.map { location ->
+      user?.let { user ->
+        locationRef.document(user.id).set(UserLocation(user.id, location.latitude, location.longitude))
       }
     }
   }
@@ -144,7 +134,7 @@ class GroupsMapFragment : BaseFragment(), KodeinAware, GroupsMapView {
 
   private val locationCallback = object : LocationCallback() {
     override fun onLocationResult(locationResult: LocationResult) {
-      launch(UI) {
+      launch{
         channelLocation.send(locationResult.lastLocation)
       }
     }
@@ -191,7 +181,7 @@ class GroupsMapFragment : BaseFragment(), KodeinAware, GroupsMapView {
   override fun onDestroyView() {
     super.onDestroyView()
     firebaseAuth.removeAuthStateListener(authStateListener)
-    channelFirebaseUser.close()
+    channelUser.close()
     channelLocation.close()
     presenter.detachView()
   }
