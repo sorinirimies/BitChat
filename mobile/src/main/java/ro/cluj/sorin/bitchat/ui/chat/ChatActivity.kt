@@ -110,16 +110,14 @@ class ChatActivity : BaseActivity(), ChatView {
         val groupId = data["groupId"].toString()
         if (groupId == group?.id) {
           val isSending = data["userId"].toString() == user?.id
-          val msg: ChatMessage? = ChatMessage(data["messageId"].toString(),
+          val msg = ChatMessage(data["messageId"].toString(),
               data["groupId"].toString(),
               data["userId"].toString(),
               data["userName"].toString(),
               isSending,
               data["message"].toString(),
               data["time"].toString().toLong())
-          msg?.let {
-            presenter.addMessage(msg)
-          }
+          presenter.addMessage(msg)
         }
       }
     }
