@@ -29,7 +29,6 @@ import ro.cluj.sorin.bitchat.model.ChatMessage
 import ro.cluj.sorin.bitchat.model.State
 import ro.cluj.sorin.bitchat.model.User
 import ro.cluj.sorin.bitchat.ui.BaseActivity
-import ro.cluj.sorin.bitchat.ui.groups.DEFAULT_GROUP_ID
 import ro.cluj.sorin.bitchat.ui.nearby.NEARBY_SERVICE_ID
 import ro.cluj.sorin.bitchat.utils.toBitChatUser
 import java.util.Calendar
@@ -91,7 +90,7 @@ class ChatActivity : BaseActivity(), ChatView {
       }
     }
     if (group?.id != NEARBY_SERVICE_ID) {
-      addChatDbListener()
+      registerFirebaseChatListener()
       isNearbyChatEnabled = false
     } else {
       isNearbyChatEnabled = true
@@ -102,23 +101,21 @@ class ChatActivity : BaseActivity(), ChatView {
     }
   }
 
-  private fun addChatDbListener() {
-    messageRef.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-      if (firebaseFirestoreException != null) return@addSnapshotListener
-      querySnapshot?.forEach {
-        val data = it.data
-        val groupId = data["groupId"].toString()
-        if (groupId == group?.id) {
-          val isSending = data["userId"].toString() == user?.id
-          val msg = ChatMessage(data["messageId"].toString(),
-              data["groupId"].toString(),
-              data["userId"].toString(),
-              data["userName"].toString(),
-              isSending,
-              data["message"].toString(),
-              data["time"].toString().toLong())
-          presenter.addMessage(msg)
-        }
+  private fun registerFirebaseChatListener() = messageRef.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+    if (firebaseFirestoreException != null) return@addSnapshotListener
+    querySnapshot?.forEach {
+      val data = it.data
+      val groupId = data["groupId"].toString()
+      if (groupId == group?.id) {
+        val isSending = data["userId"].toString() == user?.id
+        val msg = ChatMessage(data["messageId"].toString(),
+            data["groupId"].toString(),
+            data["userId"].toString(),
+            data["userName"].toString(),
+            isSending,
+            data["message"].toString(),
+            data["time"].toString().toLong())
+        presenter.addMessage(msg)
       }
     }
   }
@@ -134,10 +131,10 @@ class ChatActivity : BaseActivity(), ChatView {
 
   override fun onDestroy() {
     super.onDestroy()
-    presenter.stopNearbyChat()
+    presenter.detachView()
+    registerFirebaseChatListener().remove()
     channelFirebaseUser.close()
     firebaseAuth.removeAuthStateListener(authStateListener)
-    presenter.detachView()
   }
 
   override fun showUserIsLoggedIn(user: FirebaseUser) {

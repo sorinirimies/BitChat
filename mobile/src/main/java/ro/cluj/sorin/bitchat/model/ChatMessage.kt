@@ -9,7 +9,7 @@ data class ChatMessage(
   val groupId: String,
   val userId: String,
   val userName: String?,
-  var isSending: Boolean = false,
+  var isSending: Boolean,
   val message: String,
   val time: Long
 ) : Parcelable
