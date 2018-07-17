@@ -9,7 +9,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.greenspand.kotlin_ext.alertDialog
 import com.greenspand.kotlin_ext.animateGone
-import com.greenspand.kotlin_ext.animateVisible
 import com.greenspand.kotlin_ext.init
 import com.greenspand.kotlin_ext.snack
 import kotlinx.android.synthetic.main.fragment_groups.contGroupsFragment
@@ -75,7 +74,7 @@ class GroupsFragment : BaseFragment(), GroupsView {
     } else {
       //TODO remove this as it is used only for pre-alpha version
       groupsAdapter.clearItems()
-      groupsAdapter.addItem(ChatGroup(DEFAULT_GROUP_ID, getString(R.string.nearby_chat_group)))
+      groupsAdapter.addItem(ChatGroup(DEFAULT_GROUP_ID, getString(R.string.group_cryptonarii)))
       fabCreateGroup.animateGone()
       //TODO re-enable for production app version
       //      addGroupsDbChangeListener()
@@ -103,6 +102,7 @@ class GroupsFragment : BaseFragment(), GroupsView {
 
   override fun onDestroyView() {
     super.onDestroyView()
+    firebaseAuth.removeAuthStateListener(authStateListener)
     presenter.detachView()
   }
 
