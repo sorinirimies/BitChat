@@ -17,7 +17,6 @@ import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import ro.cluj.sorin.bitchat.BaseFragAdapter
 import ro.cluj.sorin.bitchat.R
-import ro.cluj.sorin.bitchat.ui.chat.PARAM_CHAT_GROUP
 import ro.cluj.sorin.bitchat.ui.groups.GroupsFragment
 import ro.cluj.sorin.bitchat.ui.map.GroupsMapFragment
 import ro.cluj.sorin.bitchat.ui.user.UserProfileFragment
@@ -81,6 +80,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, MainView, UserSettingsLis
       }
       return@setOnNavigationItemSelectedListener true
     }
+    pagerContFragments.currentItem = PAGE_USER
   }
 
   override fun onStart() {
