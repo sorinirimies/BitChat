@@ -14,7 +14,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -23,7 +22,6 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.BroadcastChannel
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
-import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import ro.cluj.sorin.bitchat.R
@@ -38,7 +36,6 @@ import ro.cluj.sorin.bitchat.utils.createLocationRequest
 import ro.cluj.sorin.bitchat.utils.hasPermissions
 import ro.cluj.sorin.bitchat.utils.loadMapStyle
 import ro.cluj.sorin.bitchat.utils.toBitChatUser
-import timber.log.Timber
 
 /**
  * Created by sorin on 12.05.18.
@@ -56,6 +53,7 @@ class GroupsMapFragment : BaseFragment(), GroupsMapView {
   override fun showUserIsLoggedOut() {
     fusedLocationClient?.removeLocationUpdates(locationCallback)
     channelLocation.close()
+    googleMap?.clear()
   }
 
   override fun getLayoutId() = R.layout.fragment_map

@@ -64,6 +64,9 @@ class GroupsFragment : BaseFragment(), GroupsView {
       adapter = groupsAdapter
     }
     firebaseAuth.addAuthStateListener(authStateListener)
+
+    groupsAdapter.clearItems()
+    groupsAdapter.addItem(ChatGroup(DEFAULT_GROUP_ID, getString(R.string.group_cryptonarii)))
   }
 
   fun enableNearbyChatGroup(isEnabled: Boolean) {
