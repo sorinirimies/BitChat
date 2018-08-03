@@ -12,8 +12,10 @@ interface MqttManager {
      * @param serverURI
      * @param topics
      * @param qos
+     * @param clientId
+     * @param user
      */
-    fun connect(serverURI: String, topics: Array<String>, qos: IntArray)
+    fun connect(serverURI: String, topics: Array<String>, qos: IntArray, clientId: String?, user: String?)
 
     /**
      * Disconnects the mqtt client

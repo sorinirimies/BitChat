@@ -40,7 +40,9 @@ import kotlinx.android.synthetic.main.fragment_user_profile.tvLastSignIn
 import kotlinx.android.synthetic.main.fragment_user_profile.tvName
 import kotlinx.android.synthetic.main.fragment_user_profile.tvPhoneNumber
 import kotlinx.android.synthetic.main.fragment_user_profile.tvSignInLabel
-import kotlinx.coroutines.experimental.channels.BroadcastChannel
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.channels.SendChannel
+import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
 import org.kodein.di.generic.instance
@@ -77,7 +79,11 @@ class UserProfileFragment : BaseFragment(), UserProfileView,
           .build()
     }
   }
-  private val channelGoogleSignIn by lazy { BroadcastChannel<GoogleSignInAccount>(1) }
+  private val channelGoogleSignInReady: SendChannel<GoogleSignInAccount> = actor(UI) {
+    channel.consumeEach {
+      firebaseAuthWithGoogle(it)
+    }
+  }
 
   override fun getLayoutId() = R.layout.fragment_user_profile
 
@@ -99,12 +105,6 @@ class UserProfileFragment : BaseFragment(), UserProfileView,
     super.onViewCreated(view, savedInstanceState)
     presenter.attachView(this)
 
-    launch {
-      channelGoogleSignIn.openSubscription().consumeEach {
-        firebaseAuthWithGoogle(it)
-      }
-    }
-
     /* Google login click listener*/
     btnGoogleLogin.setOnClickListener {
       val signInIntent = Auth.GoogleSignInApi.getSignInIntent(gApiClient)
@@ -116,7 +116,7 @@ class UserProfileFragment : BaseFragment(), UserProfileView,
     btnFacebookLogin.setOnClickListener {
       LoginManager.getInstance()
           .logInWithReadPermissions(this@UserProfileFragment,
-              Arrays.asList("email", "public_profile", "user_friends"))
+              Arrays.asList("email", "public_profile"))
     }
 
     /* Logout*/
@@ -168,7 +168,7 @@ class UserProfileFragment : BaseFragment(), UserProfileView,
   override fun onDestroy() {
     super.onDestroy()
     LoginManager.getInstance().unregisterCallback(callbackManager)
-    channelGoogleSignIn.close()
+    channelGoogleSignInReady.close()
   }
 
   override fun onDestroyView() {
@@ -189,7 +189,9 @@ class UserProfileFragment : BaseFragment(), UserProfileView,
   private fun GoogleSignInResult.handleLoginResult() {
     if (isSuccess) {
       launch {
-        signInAccount?.let { channelGoogleSignIn.send(it) }
+        signInAccount?.let {
+          channelGoogleSignInReady.send(it)
+        }
       }
     } else {
       presenter.showUserLoginFailed("Google sign in failed.")
