@@ -75,13 +75,8 @@ class GroupsFragment : BaseFragment(), GroupsView {
       groupsAdapter.addItem(ChatGroup(NEARBY_SERVICE_ID, getString(R.string.nearby_chat_group)))
       fabCreateGroup.animateGone()
     } else {
-      //TODO remove this as it is used only for pre-alpha version
-      groupsAdapter.clearItems()
-      groupsAdapter.addItem(ChatGroup(DEFAULT_GROUP_ID, getString(R.string.group_cryptonarii)))
-      fabCreateGroup.animateGone()
-      //TODO re-enable for production app version
-      //      addGroupsDbChangeListener()
-      //      fabCreateGroup.animateVisible()
+      addGroupsDbChangeListener()
+      fabCreateGroup.animateVisible()
     }
   }
 

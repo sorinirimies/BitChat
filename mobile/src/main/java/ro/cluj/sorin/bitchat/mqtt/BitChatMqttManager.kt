@@ -1,9 +1,9 @@
 package ro.cluj.sorin.bitchat.mqtt
 
-import android.app.Application
-import android.provider.Settings
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.experimental.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.channels.SendChannel
+import kotlinx.coroutines.experimental.channels.actor
+import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
 import org.eclipse.paho.client.mqttv3.IMqttActionListener
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
@@ -21,7 +21,12 @@ import kotlin.concurrent.fixedRateTimer
 /**
  * Created by sorin on 12.05.18.
  */
-class BitChatMqttManager(private val application: Application, private val accountManager: FirebaseAuth) : MqttManager {
+
+typealias MqttPayload = (Pair<String, MqttMessage>) -> Unit
+
+typealias MqttConnectionStatus = (Boolean) -> Unit
+
+class BitChatMqttManager(mqttPayload: MqttPayload, mqttConnectionStatus: MqttConnectionStatus) : MqttManager {
   private var maxNumberOfRetries = 4
   private var retryInterval = 4000L
   private var topics: Array<String> = arrayOf()
@@ -30,33 +35,45 @@ class BitChatMqttManager(private val application: Application, private val accou
   private var retryCount = 0
   private var isMqttClientConnected = false
   private var mqttClient: MqttAsyncClient? = null
-  private val mqttMessageChannel by lazy { ConflatedBroadcastChannel<Pair<String, MqttMessage>>() }
-  private val mqttConnectionStateChannel by lazy { ConflatedBroadcastChannel<Boolean>() }
+  private var user: String? = null
+  private var clientId: String? = null
   private var explicitDisconnection = false
-  @SuppressWarnings("HardwareIds")
-  override fun connect(serverURI: String, topics: Array<String>, qos: IntArray) {
+
+  private val channelMqttPayload: SendChannel<Pair<String, MqttMessage>> = actor(UI) {
+    channel.consumeEach {
+      mqttPayload.invoke(it)
+    }
+  }
+  private val channelMqttConnectionState: SendChannel<Boolean> = actor(UI) {
+    channel.consumeEach {
+      mqttConnectionStatus.invoke(it)
+    }
+  }
+
+  override fun connect(serverURI: String, topics: Array<String>, qos: IntArray, clientId: String?, user: String?) {
     if (isMqttClientConnected) {
       Timber.w("connect was called although the mqttClient is already connected")
       return
     }
     this@BitChatMqttManager.topics = topics
     this@BitChatMqttManager.qos = qos
-    val clientId = Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID)
+    this@BitChatMqttManager.clientId = clientId
+    this@BitChatMqttManager.user = user
     mqttClient = MqttAsyncClient(serverURI, clientId, MemoryPersistence())
     mqttClient?.setCallback(object : MqttCallback {
       @Throws(Exception::class)
       override fun messageArrived(topic: String, message: MqttMessage) {
         val msg = message.payload.toString(Charsets.UTF_8)
-        Timber.w("ChatMessage arrived: $msg")
-        launch { mqttMessageChannel.send(topic to message) }
+        Timber.tag(BitChatMqttManager::class.java.simpleName).w("Mqtt payload arrived: $msg")
+        sendMqttPayload(topic to message)
       }
 
       override fun deliveryComplete(token: IMqttDeliveryToken?) = Unit
 
       override fun connectionLost(cause: Throwable) {
         isMqttClientConnected = false
-        launch { mqttConnectionStateChannel.send(false) }
-        mqttConnectionStateChannel.close()
+        sendMqttConnectionStatus(false)
+        channelMqttConnectionState.close()
         Timber.w(cause, "MQTT connection lost")
         if (!explicitDisconnection) {
           resetTimer()
@@ -67,7 +84,7 @@ class BitChatMqttManager(private val application: Application, private val accou
     val connectAction: IMqttActionListener = object : IMqttActionListener {
       override fun onSuccess(asyncActionToken: IMqttToken?) {
         isMqttClientConnected = true
-        sendConnectionStatus(true)
+        sendMqttConnectionStatus(true)
         Timber.w("MQTT connected")
         mqttClient?.subscribe(topics, qos, null, object : IMqttActionListener {
           override fun onSuccess(asyncActionToken: IMqttToken?) {
@@ -82,8 +99,8 @@ class BitChatMqttManager(private val application: Application, private val accou
 
       override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable) {
         isMqttClientConnected = false
-        mqttMessageChannel.close()
-        mqttConnectionStateChannel.close()
+        channelMqttPayload.close()
+        channelMqttConnectionState.close()
         Timber.e(exception, "MQTT could not establish connection")
         if (!explicitDisconnection) {
           retry()
@@ -93,7 +110,7 @@ class BitChatMqttManager(private val application: Application, private val accou
     try {
       val options = MqttConnectOptions().apply {
         isCleanSession = true
-        userName = accountManager.currentUser?.displayName
+        userName = user
       }
       mqttClient?.connect(options, null, connectAction)
     } catch (cause: MqttException) {
@@ -101,9 +118,9 @@ class BitChatMqttManager(private val application: Application, private val accou
     }
   }
 
-  fun sendConnectionStatus(isConnected: Boolean = false) = launch { mqttConnectionStateChannel.send(isConnected) }
+  fun sendMqttConnectionStatus(isConnected: Boolean = false) = launch { channelMqttConnectionState.send(isConnected) }
 
-  fun sendMqttMessage(message: Pair<String, MqttMessage>) = launch { mqttMessageChannel.send(message) }
+  fun sendMqttPayload(message: Pair<String, MqttMessage>) = launch { channelMqttPayload.send(message) }
 
   override fun disconnect() {
     if (!isMqttClientConnected) {
@@ -115,8 +132,8 @@ class BitChatMqttManager(private val application: Application, private val accou
         Timber.w("Mqtt Client disconnected")
         isMqttClientConnected = false
         explicitDisconnection = true
-        mqttMessageChannel.close()
-        mqttConnectionStateChannel.close()
+        channelMqttPayload.close()
+        channelMqttConnectionState.close()
       }
 
       override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable) {
@@ -160,11 +177,11 @@ class BitChatMqttManager(private val application: Application, private val accou
         retryCount++
         Timber.w("MQTT reconnect retry $retryCount")
         if (mqttClient?.isConnected == true || retryCount > maxNumberOfRetries) {
-          sendConnectionStatus(isMqttClientConnected)
+          sendMqttConnectionStatus(isMqttClientConnected)
           cancel()
         }
-        val loggedIn = accountManager.currentUser != null
-        if (loggedIn) connect(mqttClient?.serverURI ?: "", topics, qos)
+        val loggedIn = user != null
+        if (loggedIn) connect(mqttClient?.serverURI ?: "", topics, qos, clientId, user)
         else disconnect()
       }
     }

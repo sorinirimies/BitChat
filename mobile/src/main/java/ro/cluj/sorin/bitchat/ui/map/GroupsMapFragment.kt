@@ -11,6 +11,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
@@ -20,6 +21,8 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.fragment_map.mapBitchat
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.BroadcastChannel
+import kotlinx.coroutines.experimental.channels.SendChannel
+import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
 import org.kodein.di.android.closestKodein
@@ -36,6 +39,8 @@ import ro.cluj.sorin.bitchat.utils.createLocationRequest
 import ro.cluj.sorin.bitchat.utils.hasPermissions
 import ro.cluj.sorin.bitchat.utils.loadMapStyle
 import ro.cluj.sorin.bitchat.utils.toBitChatUser
+import ro.cluj.sorin.bitchat.utils.toLatLng
+import timber.log.Timber
 
 /**
  * Created by sorin on 12.05.18.
@@ -64,7 +69,14 @@ class GroupsMapFragment : BaseFragment(), GroupsMapView {
   private var user: User? = null
   private var googleMap: GoogleMap? = null
   private lateinit var mapView: MapView
-  private val channelLocation by lazy { BroadcastChannel<Location>(10000000) }
+
+  private val channelLocation: SendChannel<Location> = actor(UI) {
+    channel.consumeEach {location ->
+      user?.let { user ->
+        locationRef.document(user.id).set(UserLocation(user.id, location.latitude, location.longitude))
+      }
+    }
+  }
   private val channelFirebaseUser by lazy { BroadcastChannel<FirebaseUser>(1) }
 
   private val locationRef by lazy { db.collection("location") }
@@ -90,20 +102,7 @@ class GroupsMapFragment : BaseFragment(), GroupsMapView {
     launch(UI) {
       channelFirebaseUser.openSubscription().consumeEach {
         user = it.toBitChatUser()
-        startLocationChannel()
         registerForUsersLocationUpdates()
-      }
-    }
-  }
-
-  private fun startLocationChannel() {
-    launch(UI) {
-      channelLocation.openSubscription().consumeEach { location ->
-        user?.let { user ->
-          locationRef.document(user.id).set(UserLocation(user.id, location.latitude, location.longitude))
-        }
-        //FIXME find a way to initially zoom camera in
-        //        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location.toLatLng(), DEFAULT_ZOOM))
       }
     }
   }
@@ -142,7 +141,8 @@ class GroupsMapFragment : BaseFragment(), GroupsMapView {
     this.googleMap = googleMap
     googleMap.apply {
       isMyLocationEnabled = true
-      context?.let { loadMapStyle(it, R.raw.google_map_style) }
+      context?.let { loadMapStyle(it, R.raw.google_map_style)
+        moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation?.toLatLng()?:LatLng(), DEFAULT_ZOOM))
       setOnInfoWindowClickListener {
         startChatActivity()
       }
@@ -161,7 +161,7 @@ class GroupsMapFragment : BaseFragment(), GroupsMapView {
 
   private val locationCallback = object : LocationCallback() {
     override fun onLocationResult(locationResult: LocationResult) {
-      launch(UI) {
+      launch{
         channelLocation.send(locationResult.lastLocation)
       }
     }
