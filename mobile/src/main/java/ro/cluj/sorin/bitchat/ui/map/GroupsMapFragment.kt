@@ -15,7 +15,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -26,7 +25,6 @@ import kotlinx.coroutines.experimental.channels.SendChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.consumeEach
 import kotlinx.coroutines.experimental.launch
-import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import ro.cluj.sorin.bitchat.R
@@ -60,6 +58,7 @@ class GroupsMapFragment : BaseFragment(), GroupsMapView {
   override fun showUserIsLoggedOut() {
     fusedLocationClient?.removeLocationUpdates(locationCallback)
     channelLocation.close()
+    googleMap?.clear()
   }
 
   override fun getLayoutId() = R.layout.fragment_map
