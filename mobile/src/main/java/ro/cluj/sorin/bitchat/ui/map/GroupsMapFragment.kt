@@ -40,7 +40,6 @@ import ro.cluj.sorin.bitchat.utils.hasPermissions
 import ro.cluj.sorin.bitchat.utils.loadMapStyle
 import ro.cluj.sorin.bitchat.utils.toBitChatUser
 import ro.cluj.sorin.bitchat.utils.toLatLng
-import timber.log.Timber
 
 /**
  * Created by sorin on 12.05.18.
@@ -71,7 +70,7 @@ class GroupsMapFragment : BaseFragment(), GroupsMapView {
   private lateinit var mapView: MapView
 
   private val channelLocation: SendChannel<Location> = actor(UI) {
-    channel.consumeEach {location ->
+    channel.consumeEach { location ->
       user?.let { user ->
         locationRef.document(user.id).set(UserLocation(user.id, location.latitude, location.longitude))
       }
@@ -141,14 +140,16 @@ class GroupsMapFragment : BaseFragment(), GroupsMapView {
     this.googleMap = googleMap
     googleMap.apply {
       isMyLocationEnabled = true
-      context?.let { loadMapStyle(it, R.raw.google_map_style)
-        moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation?.toLatLng()?:LatLng(), DEFAULT_ZOOM))
-      setOnInfoWindowClickListener {
-        startChatActivity()
-      }
-      setOnMarkerClickListener {
-        startChatActivity()
-        false
+      context?.let {
+        loadMapStyle(it, R.raw.google_map_style)
+        moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation?.toLatLng() ?: LatLng(0.00, 0.00), DEFAULT_ZOOM))
+        setOnInfoWindowClickListener {
+          startChatActivity()
+        }
+        setOnMarkerClickListener {
+          startChatActivity()
+          false
+        }
       }
     }
   }
@@ -161,7 +162,7 @@ class GroupsMapFragment : BaseFragment(), GroupsMapView {
 
   private val locationCallback = object : LocationCallback() {
     override fun onLocationResult(locationResult: LocationResult) {
-      launch{
+      launch {
         channelLocation.send(locationResult.lastLocation)
       }
     }
@@ -218,3 +219,4 @@ class GroupsMapFragment : BaseFragment(), GroupsMapView {
     mapView.onDestroy()
   }
 }
+
