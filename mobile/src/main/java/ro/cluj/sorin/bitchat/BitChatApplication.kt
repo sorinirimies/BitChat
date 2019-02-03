@@ -3,9 +3,7 @@ package ro.cluj.sorin.bitchat
 import android.app.Application
 import com.facebook.FacebookSdk
 import com.google.firebase.FirebaseApp
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.androidModule
+import org.koin.core.context.startKoin
 import ro.cluj.sorin.bitchat.injection.firebaseModule
 import ro.cluj.sorin.bitchat.injection.nearbyConnectionsModule
 import ro.cluj.sorin.bitchat.injection.networkModule
@@ -15,21 +13,20 @@ import timber.log.Timber
 /**
  * Created by Sorin Albu-Irimies on 5/18/2018.
  */
-class BitChatApplication : Application(), KodeinAware {
-  override fun onCreate() {
-    super.onCreate()
-    FirebaseApp.initializeApp(applicationContext)
-    FacebookSdk.sdkInitialize(applicationContext)
-    if (BuildConfig.DEBUG) {
-      Timber.plant(Timber.DebugTree())
+class BitChatApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        FirebaseApp.initializeApp(applicationContext)
+        FacebookSdk.sdkInitialize(applicationContext)
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+        startKoin {
+            logger()
+            modules(firebaseModule,
+                    nearbyConnectionsModule,
+                    networkModule,
+                    uiPresentersModule)
+        }
     }
-  }
-
-  override val kodein = Kodein.lazy {
-    import(androidModule(this@BitChatApplication))
-    import(networkModule)
-    import(nearbyConnectionsModule)
-    import(firebaseModule)
-    import(uiPresentersModule)
-  }
 }
