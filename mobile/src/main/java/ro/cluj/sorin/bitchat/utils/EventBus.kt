@@ -1,7 +1,8 @@
 package ro.cluj.sorin.bitchat.utils
 
-import kotlinx.coroutines.experimental.channels.*
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.*
+import kotlinx.coroutines.launch
 import kotlin.reflect.jvm.internal.impl.javax.inject.Inject
 import kotlin.reflect.jvm.internal.impl.javax.inject.Singleton
 
@@ -20,7 +21,7 @@ class EventBus @Inject constructor() {
     val bus: BroadcastChannel<Any> = ConflatedBroadcastChannel()
 
     fun send(o: Any) {
-        launch {
+        GlobalScope.launch {
             bus.send(o)
         }
     }
