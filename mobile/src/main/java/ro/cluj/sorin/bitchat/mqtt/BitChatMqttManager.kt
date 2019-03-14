@@ -1,6 +1,8 @@
 package ro.cluj.sorin.bitchat.mqtt
 
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.consumeEach
@@ -10,17 +12,21 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import timber.log.Timber
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
+import kotlin.coroutines.CoroutineContext
 
 /**
- * Created by sorin on 12.05.18.
+ * Created by Sorin Albu-Irimies on 12.05.18.
  */
 
 typealias MqttPayload = (Pair<String, MqttMessage>) -> Unit
 
 typealias MqttConnectionStatus = (Boolean) -> Unit
 
-//FIXME fix global scope as this might create memory leaks
-class BitChatMqttManager(mqttPayload: MqttPayload, mqttConnectionStatus: MqttConnectionStatus) : MqttManager {
+class BitChatMqttManager(mqttPayload: MqttPayload, mqttConnectionStatus: MqttConnectionStatus) : MqttManager,
+    CoroutineScope {
+    private val job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Default
     private var maxNumberOfRetries = 4
     private var retryInterval = 4000L
     private var topics: Array<String> = arrayOf()
@@ -33,12 +39,12 @@ class BitChatMqttManager(mqttPayload: MqttPayload, mqttConnectionStatus: MqttCon
     private var clientId: String? = null
     private var explicitDisconnection = false
 
-    private val channelMqttPayload: SendChannel<Pair<String, MqttMessage>> = GlobalScope.actor {
+    private val channelMqttPayload: SendChannel<Pair<String, MqttMessage>> = actor {
         channel.consumeEach {
             mqttPayload.invoke(it)
         }
     }
-    private val channelMqttConnectionState: SendChannel<Boolean> = GlobalScope.actor {
+    private val channelMqttConnectionState: SendChannel<Boolean> = actor {
         channel.consumeEach {
             mqttConnectionStatus.invoke(it)
         }
@@ -49,6 +55,7 @@ class BitChatMqttManager(mqttPayload: MqttPayload, mqttConnectionStatus: MqttCon
             Timber.w("connect was called although the mqttClient is already connected")
             return
         }
+        job.start()
         this@BitChatMqttManager.topics = topics
         this@BitChatMqttManager.qos = qos
         this@BitChatMqttManager.clientId = clientId
@@ -112,11 +119,11 @@ class BitChatMqttManager(mqttPayload: MqttPayload, mqttConnectionStatus: MqttCon
         }
     }
 
-    fun sendMqttConnectionStatus(isConnected: Boolean = false) = GlobalScope.launch {
+    fun sendMqttConnectionStatus(isConnected: Boolean = false) = launch {
         channelMqttConnectionState.send(isConnected)
     }
 
-    fun sendMqttPayload(message: Pair<String, MqttMessage>) = GlobalScope.launch {
+    fun sendMqttPayload(message: Pair<String, MqttMessage>) = launch {
         channelMqttPayload
                 .send(message)
     }
@@ -133,6 +140,7 @@ class BitChatMqttManager(mqttPayload: MqttPayload, mqttConnectionStatus: MqttCon
                 explicitDisconnection = true
                 channelMqttPayload.close()
                 channelMqttConnectionState.close()
+                job.cancel()
             }
 
             override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable) {
