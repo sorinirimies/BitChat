@@ -13,7 +13,7 @@ ext {
     retrofitVersion = "2.3.0"
     leakCanaryVersion = "1.5"
     mqttVersion = '1.2.0'
-    kotlinExtVersion = '1.0.1'
+    kotlinExtVersion = '1.0.2'
 }
 
 android {
